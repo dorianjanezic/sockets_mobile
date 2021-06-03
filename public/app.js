@@ -1,52 +1,16 @@
+//global variables
+let notes = ["C", "D", "E", "F", "G", "A", "H"];
+var calculatescale = 1;
+let alpha;
 
-    let players = [];
-    
-    function setup() {
-        console.log("setup");
-        scale = Tonal.Scale.get("C4 major").notes;
-        ready = true;
-        sendPresence();
-    };    
-
-    function sendPresence() {
-        console.log("sending connection");
-        let data = {
-            "synth" : true,
-            "synthSetting" : "Sampler({urls: {C4: 'C4.wav'},onload: () => {console.log('loaded');}})",
-            "controls" : [
-                {
-                    "name" : "pitch"
-                },
-                {
-                    "name" : "envelope",
-                    "attack" : 0.1,
-                    "decay" : 0,
-                    "sustain" : 1,
-                    "release" : 0.2
-                },
-                {
-                    "name" : "volume",
-                    "startVal" : 3
-                },
-                {
-                    "name" : "distortion",
-                    "startVal" : 0.8
-                }
-            ]
-        };
-        socket.emit('sendPresence', data);
-    }
-
-
-
-    //Initialize Sockets
+//Initialize Sockets
 let socket = io();
-
     socket.on('connect', function () {
         console.log("Connected");
     });
+
 window.addEventListener('load', function () {
-    
+
 var px = 50; // Position x and y
 var py = 50;
 var vx = 0.0; // Velocity x and y
@@ -66,7 +30,8 @@ document
     }
   });
 
-function getAccel() {
+  //android devices access motion sensor
+  function getAccel() {
     console.log("a");
     DeviceMotionEvent.requestPermission().then(response => {
       if (response == "granted") {
@@ -74,13 +39,43 @@ function getAccel() {
         // in the alpha-beta-gamma axes (units in degrees)
         window.addEventListener("deviceorientation", e => {
           console.log(e);
-          alphaAngle = document.getElementById("alpha").innerHTML = e.alpha;
+          alpha = document.getElementById("alpha").innerHTML = e.alpha;
           document.getElementById("beta").innerHTML = e.beta;
           document.getElementById("gama").innerHTML = e.gamma;
+
+          let value = Math.floor(mapNumber(alpha, 0, 360, 0, 30));
+          calculatescale = calculateNote(value).concat(calculateOctave(value));
         });
       };
     });
   };
+
+//map range
+function mapNumber(number, inMin, inMax, outMin, outMax) {
+  return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+};
+
+function calculateNote (valueString) {
+    let iterval = parseInt(valueString)% 7;
+    return (notes[iterval]);
+  };
+function calculateOctave (valueString) {
+    let iterval = Math.floor(parseInt(valueString)/ 7);
+    return (iterval.toString());
+  };
+
+//Membrane Synth
+const synth = new Tone.MembraneSynth().toDestination();
+
+//Sequence object
+const synthPart = new Tone.Sequence(
+    function(time, note) {
+      synth.triggerAttackRelease(calculatescale, "10hz", time);
+    },
+    notes,
+    "4n"
+  );
+  synthPart.start();
 
   document.getElementById("button").addEventListener("click", async () => {
     if (isIOSDevice()) {
@@ -90,107 +85,35 @@ function getAccel() {
 }
 });
 
-//console log euler angles
-    function startDeviceOrientation() {
-        window.addEventListener("deviceorientation", e => {
-        console.log(e);
-        alphaAngle = document.getElementById("alpha").innerHTML = e.alpha;
-        document.getElementById("beta").innerHTML = e.beta;
-        document.getElementById("gama").innerHTML = e.gamma;
-        });
-    };
+//Console log euler angles
 
 
+  function startDeviceOrientation() {
+    window.addEventListener("deviceorientation", e => {
+      console.log(e);
+      alpha = document.getElementById("alpha").innerHTML = e.alpha;
+      document.getElementById("beta").innerHTML = e.beta;
+      document.getElementById("gama").innerHTML = e.gamma;
+     
+      let value = Math.floor(mapNumber(alpha, 0, 360, 0, 30));
+
+      calculatescale = calculateNote(value).concat(calculateOctave(value));
+console.log(calculatescale)
+  let data = 1
+
+  socket.emit('sendData', "2");
+    });
+  }
 });
-
-function keyPressed() {
-    if (ready) {
-      // let noteNumber = floor(map(mouseX, 0, width, -7, 7));
-        noteNumber = 0;
-        let note = [];
+// synth start
+document.getElementById("synthstart").addEventListener("click", async () => {
+    await Tone.start();
+    Tone.Transport.start();
+  });
   
-        switch (key) {
-            case "s":
-            noteNumber = 0;
-            break;
-            case "q":
-            noteNumber = 1;
-            break;
-            case "w":
-            noteNumber = 2;
-            break;
-            case "e":
-            noteNumber = 3;
-            break;
-            case "a":
-            noteNumber = 4;
-            break;
-            case "d":
-            noteNumber = 5;
-            break;
-            case "z":
-            noteNumber = 6;
-            break;
-            case "x":
-            noteNumber = 7;
-            break;
-            case "c":
-            noteNumber = 8;
-            break;
-      }
-      let note1 = mapNote(noteNumber, scale);
-      let note2 = mapNote(noteNumber + 4, scale);
-      let note3 = mapNote(noteNumber + 8, scale);
-      note.push(note1);
-      note.push(note2);
-      note.push(note3);
-      console.log(note);
-      note = '"' + note + '"';
+  //synth stop
+  document.getElementById("synthstop").addEventListener("click", async () => {
+    Tone.Transport.stop();
+  });
 
-      let value = {
-        "pitch" : note
-        }
-        sendData(value);
-    }
-}
-
-function mapNote(noteNumber, scale) {
-    let numNotes = scale.length;
-    let i = modulo(noteNumber, numNotes);
-    let note = scale[i];
-    let octaveTranspose = floor(noteNumber / numNotes);
-    let interval = Tonal.Interval.fromSemitones(octaveTranspose * 12);
-    return Tonal.Note.transpose(note, interval);
-}
-
-function modulo(n, m) {
-    return ((n % m) + m) % m;
-}
-
-//Send Data From DOM Event Listeners
-function sendData(value) {
-    let data = {
-        "value" : value
-    }
-    console.log(data);
-    socket.emit('sendData', data);
-}
-//Get new performer connection
-socket.on('getPresence', (data) => {
-    console.log(data);
-    let newPerformer = new Performer(data);
-    ready = false;
-    newPerformer.setupInstrument();
-    activePerformers.push(players);
-    // console.log(activePerformers);
-});
-
-//Get data from active performers
-socket.on('getData', (data) => {
-    // console.log(data);
-    for (j = 0; j < players.length; j++) {
-        if (players[j].id === data.socketID) {
-            players[j].checkData(data.value);
-        }
-    };
-});
+  socket.emit('sendData', "2");

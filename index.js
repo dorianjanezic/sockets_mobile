@@ -11,22 +11,13 @@ server.listen(port, () => {
     console.log("Server listening at port: " + port);
 });
 
-
 let io = require('socket.io')(server);
 
 //Listen for individual clients/users to connect
 io.sockets.on('connection', function(socket) {
     console.log("We have a new client: " + socket.id);
+});
 
-    socket.on('sendPresence', (data) => {
-        socket.emit('getPresence', data);
-console.log(data);
-    })
-
-    socket.on('sendData', (data) => {
-        data.socketID = socket.id;
-        console.log(data);
-        socket.emit('getData', data);
-    });
-
+io.sockets.on('sendData', (data) => {
+    console.log(data);
 });
