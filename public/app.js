@@ -2,6 +2,14 @@
 let notes = ["C", "D", "E", "F", "G", "A", "H"];
 var calculatescale = 1;
 let alpha;
+let synth1;
+
+let synthPart1;
+
+document.getElementById("synthstart").addEventListener("click", async () => {
+  await Tone.start();
+  // Tone.Transport.start();
+});
 
 //Initialize Sockets
 let socket = io();
@@ -10,6 +18,9 @@ let socket = io();
     });
 
 window.addEventListener('load', function () {
+  // synth start
+
+
 
 var px = 50; // Position x and y
 var py = 50;
@@ -24,6 +35,7 @@ document
   .getElementById("accelPermsButton")
   .addEventListener("click", async () => {
     console.log("ab");
+    
     if (isIOSDevice()) {
       console.log("I am an IOS device!");
       getAccel();
@@ -78,6 +90,8 @@ const synthPart = new Tone.Sequence(
   synthPart.start();
 
   document.getElementById("button").addEventListener("click", async () => {
+    
+    console.log("here");
     if (isIOSDevice()) {
   getAccel();
 } else {
@@ -86,8 +100,6 @@ const synthPart = new Tone.Sequence(
 });
 
 //Console log euler angles
-
-
   function startDeviceOrientation() {
     window.addEventListener("deviceorientation", e => {
       console.log(e);
@@ -98,22 +110,39 @@ const synthPart = new Tone.Sequence(
       let value = Math.floor(mapNumber(alpha, 0, 360, 0, 30));
 
       calculatescale = calculateNote(value).concat(calculateOctave(value));
-console.log(calculatescale)
-  let data = 1
 
-  socket.emit('sendData', "2");
+  socket.emit('sendData', calculatescale);
     });
   }
 });
-// synth start
 document.getElementById("synthstart").addEventListener("click", async () => {
-    await Tone.start();
-    Tone.Transport.start();
-  });
+  await Tone.start();
+  Tone.Transport.start();
+});
+
+document.getElementById("collab").addEventListener("click", async () => {
+  await Tone.start();
+  synthPart1.start()
+  Tone.Transport.start();
+});
   
-  //synth stop
+// synth stop
   document.getElementById("synthstop").addEventListener("click", async () => {
     Tone.Transport.stop();
   });
 
-  socket.emit('sendData', "2");
+  //listening for socket messages(note && octave)
+  socket.on("hello", (data) => {
+    console.log(data);
+
+//Membrane Synth
+synth1 = new Tone.MetalSynth().toDestination();
+
+synthPart1 = new Tone.Sequence(
+  function(time, note) {
+    synth1.triggerAttackRelease(data, "10hz", time);
+  },
+  notes,
+  "4n"
+);
+});

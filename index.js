@@ -16,8 +16,10 @@ let io = require('socket.io')(server);
 //Listen for individual clients/users to connect
 io.sockets.on('connection', function(socket) {
     console.log("We have a new client: " + socket.id);
-});
 
-io.sockets.on('sendData', (data) => {
-    console.log(data);
+    socket.on('sendData', (data) => {
+       socket.broadcast.emit("hello", data);
+    });
+
+
 });
