@@ -20,6 +20,4 @@ io.sockets.on('connection', function(socket) {
     socket.on('sendData', (data) => {
        socket.broadcast.emit("hello", data);
     });
-
-
 });
