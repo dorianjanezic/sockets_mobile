@@ -1,6 +1,6 @@
 //global variables
 let notes = ["C", "D", "E", "F", "G", "A", "B"];
-let sequence = ["C1", "D1", "E1", "F1", "G2", "A1", "B1"];
+let sequence = ["C4", "D4", "E4", "F4", "G4", "A4", "B4"];
 var calculatescale = 1;
 let alpha, beta, gamma;
 let synthPart1;
@@ -113,7 +113,8 @@ document
           let note = calculateNote(value) // "C"
           let octave = calculateOctave(value) // "1"
           calculatescale = note.concat(octave); // "C1"
-          sequence[value % 7] = calculatescale
+          sequence[value % 7] = calculatescale // set sequence's value to new accell value
+          console.log(sequence)
         });
       };
     });
