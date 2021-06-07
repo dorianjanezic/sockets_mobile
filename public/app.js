@@ -1,5 +1,5 @@
 //global variables
-let notes = ["C", "D", "E", "F", "G", "A", "H"];
+let notes = ["C", "D", "E", "F", "G", "A", "B"];
 var calculatescale = 1;
 let alpha, beta, gamma;
 let synthPart1;
@@ -33,7 +33,7 @@ function(){
 });
 sampler.connect(gain).toDestination();
 
-//sampler 2 
+//sampler 2
 var sampler1 = new Tone.Sampler({
   "C3" : "assets/cow.wav"
 },
@@ -85,7 +85,7 @@ document
   .getElementById("accelPermsButton")
   .addEventListener("click", async () => {
     console.log("ab");
-    
+
     if (isIOSDevice()) {
       console.log("I am an IOS device!");
       getAccel();
@@ -142,7 +142,7 @@ function calculateOctave (valueString) {
       alpha = document.getElementById("alpha").innerHTML = e.alpha;
       beta = document.getElementById("beta").innerHTML = e.beta;
       gamma = document.getElementById("gama").innerHTML = e.gamma;
-     
+
       let value = Math.floor(mapNumber(alpha, 0, 360, 0, 30));
 
       calculatescale = calculateNote(value).concat(calculateOctave(value));
@@ -168,7 +168,7 @@ document.getElementById("collab").addEventListener("click", async () => {
   Tone.Transport.start();
   player.start()
 });
-  
+
 // synth stop
   document.getElementById("synthstop").addEventListener("click", async () => {
     Tone.Transport.stop();
@@ -184,7 +184,7 @@ document.getElementById("collab").addEventListener("click", async () => {
   setTimeout(function(){
 
     sampler.triggerAttackRelease(data);
-  }, 500); 
+  }, 500);
   // synthPart1 = new Tone.Loop(
   //   function(time) {
   //     synth1.triggerAttackRelease(data);
