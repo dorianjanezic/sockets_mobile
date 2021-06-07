@@ -1,15 +1,54 @@
 //global variables
 let notes = ["C", "D", "E", "F", "G", "A", "H"];
 var calculatescale = 1;
-let alpha;
-let synth1;
-
+let alpha, beta, gamma;
 let synthPart1;
+let player = new Tone.Player("assets/water_up.wav", {loop: true});//add loop
+let synth1 = new Tone.MetalSynth().toDestination();
+let musicplayed = false;
+let filtervalue;
+const delay = new Tone.Delay(1).toDestination();
 
-document.getElementById("synthstart").addEventListener("click", async () => {
-  await Tone.start();
-  // Tone.Transport.start();
+
+//Membrane Synth
+const synth = new Tone.MembraneSynth().toDestination();
+
+//filter
+const filter = new Tone.Filter(400, "lowpass").toDestination();
+
+//reverb
+let reverb = new Tone.Reverb(gamma);
+
+//gain
+const gain = new Tone.Volume(-100);
+
+//player
+player.connect(filter).connect(reverb);
+
+//sampler 1
+var sampler = new Tone.Sampler({
+  "C3" : "assets/1st_chord_filter.wav"
+},
+function(){
 });
+sampler.connect(gain).toDestination();
+
+//sampler 2 
+var sampler1 = new Tone.Sampler({
+  "C3" : "assets/cow.wav"
+},
+function(){
+});
+sampler1.toDestination()
+//Sequence object (lower the volume of the sample)
+const synthPart = new Tone.Sequence(
+    function(time, note) {
+      sampler.triggerAttack(calculatescale);
+    },
+    notes,
+    "1n"
+  );
+  synthPart.start();
 
 //Initialize Sockets
 let socket = io();
@@ -18,8 +57,19 @@ let socket = io();
     });
 
 window.addEventListener('load', function () {
-  // synth start
 
+
+
+  window.addEventListener('devicemotion', function(event) {
+    console.log(
+      event.acceleration.x + ' m/s2',
+      event.acceleration.y + " m/s2 ",
+      event.acceleration.z + " m/s2");
+
+    if (event.acceleration.x > 0.1) {
+      sampler1.triggerAttackRelease("C3");
+    }
+  });
 
 
 var px = 50; // Position x and y
@@ -76,21 +126,7 @@ function calculateOctave (valueString) {
     return (iterval.toString());
   };
 
-//Membrane Synth
-const synth = new Tone.MembraneSynth().toDestination();
-
-//Sequence object
-const synthPart = new Tone.Sequence(
-    function(time, note) {
-      synth.triggerAttackRelease(calculatescale, "10hz", time);
-    },
-    notes,
-    "4n"
-  );
-  synthPart.start();
-
   document.getElementById("button").addEventListener("click", async () => {
-    
     console.log("here");
     if (isIOSDevice()) {
   getAccel();
@@ -104,31 +140,39 @@ const synthPart = new Tone.Sequence(
     window.addEventListener("deviceorientation", e => {
       console.log(e);
       alpha = document.getElementById("alpha").innerHTML = e.alpha;
-      document.getElementById("beta").innerHTML = e.beta;
-      document.getElementById("gama").innerHTML = e.gamma;
+      beta = document.getElementById("beta").innerHTML = e.beta;
+      gamma = document.getElementById("gama").innerHTML = e.gamma;
      
       let value = Math.floor(mapNumber(alpha, 0, 360, 0, 30));
 
       calculatescale = calculateNote(value).concat(calculateOctave(value));
 
-  socket.emit('sendData', calculatescale);
+      filtervalue = filter.frequency.value = mapNumber (beta, 0, 100, 0, 720);
+      socket.emit('filterValue', filtervalue);
+
+      reverb.value = mapNumber (beta, 0, 200, 0, 100);
+      console.log(reverb.value);
+
+    socket.emit('sendData', calculatescale);
     });
   }
 });
 document.getElementById("synthstart").addEventListener("click", async () => {
   await Tone.start();
+  player.start()
   Tone.Transport.start();
 });
 
 document.getElementById("collab").addEventListener("click", async () => {
   await Tone.start();
-  synthPart1.start()
   Tone.Transport.start();
+  player.start()
 });
   
 // synth stop
   document.getElementById("synthstop").addEventListener("click", async () => {
     Tone.Transport.stop();
+    player.stop();
   });
 
   //listening for socket messages(note && octave)
@@ -136,13 +180,22 @@ document.getElementById("collab").addEventListener("click", async () => {
     console.log(data);
 
 //Membrane Synth
-synth1 = new Tone.MetalSynth().toDestination();
+// if (musicplayed == false) {
+  setTimeout(function(){
 
-synthPart1 = new Tone.Sequence(
-  function(time, note) {
-    synth1.triggerAttackRelease(data, "10hz", time);
-  },
-  notes,
-  "4n"
-);
+    sampler.triggerAttackRelease(data);
+  }, 500); 
+  // synthPart1 = new Tone.Loop(
+  //   function(time) {
+  //     synth1.triggerAttackRelease(data);
+  //   }, "8n").start(0)
+  //   synthPart1.start()
+  // musicplayed = true
+  // }
+});
+
+socket.on('filterValue', (data) => {
+  filter.frequency.value = data;
+  console.log(filter.frequency.value)
+  player.connect(filter);
 });

@@ -20,4 +20,9 @@ io.sockets.on('connection', function(socket) {
     socket.on('sendData', (data) => {
        socket.broadcast.emit("hello", data);
     });
+
+    socket.on('filterValue', (data) => {
+        console.log(data);
+        socket.broadcast.emit("filter", data);
+    })
 });
