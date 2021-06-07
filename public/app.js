@@ -1,5 +1,6 @@
 //global variables
-let notes = ["C", "D", "E", "F", "G", "A", "H"];
+let notes = ["C", "D", "E", "F", "G", "A", "B"];
+let sequence = ["C1", "D1", "E1", "F1", "G2", "A1", "B1"];
 var calculatescale = 1;
 let alpha, beta, gamma;
 let synthPart1;
@@ -33,7 +34,7 @@ function(){
 });
 sampler.connect(gain).toDestination();
 
-//sampler 2 
+//sampler 2
 var sampler1 = new Tone.Sampler({
   "C3" : "assets/cow.wav"
 },
@@ -41,14 +42,17 @@ function(){
 });
 sampler1.toDestination()
 //Sequence object (lower the volume of the sample)
-const synthPart = new Tone.Sequence(
-    function(time, note) {
-      sampler.triggerAttack(calculatescale);
-    },
-    notes,
-    "1n"
-  );
-  synthPart.start();
+let synthPart = newPart()
+
+function newPart() {
+  return new Tone.Sequence(
+      function(time, note) {
+        sampler.triggerAttack(note);
+      },
+      sequence,
+      "1n"
+    ).start()
+}
 
 //Initialize Sockets
 let socket = io();
@@ -85,7 +89,7 @@ document
   .getElementById("accelPermsButton")
   .addEventListener("click", async () => {
     console.log("ab");
-    
+
     if (isIOSDevice()) {
       console.log("I am an IOS device!");
       getAccel();
@@ -106,7 +110,10 @@ document
           document.getElementById("gama").innerHTML = e.gamma;
 
           let value = Math.floor(mapNumber(alpha, 0, 360, 0, 30));
-          calculatescale = calculateNote(value).concat(calculateOctave(value));
+          let note = calculateNote(value) // "C"
+          let octave = calculateOctave(value) // "1"
+          calculatescale = note.concat(octave); // "C1"
+          sequence[value % 7] = calculatescale
         });
       };
     });
@@ -119,6 +126,7 @@ function mapNumber(number, inMin, inMax, outMin, outMax) {
 
 function calculateNote (valueString) {
     let iterval = parseInt(valueString)% 7;
+    sequence[interval] = calculatescale
     return (notes[iterval]);
   };
 function calculateOctave (valueString) {
@@ -142,7 +150,7 @@ function calculateOctave (valueString) {
       alpha = document.getElementById("alpha").innerHTML = e.alpha;
       beta = document.getElementById("beta").innerHTML = e.beta;
       gamma = document.getElementById("gama").innerHTML = e.gamma;
-     
+
       let value = Math.floor(mapNumber(alpha, 0, 360, 0, 30));
 
       calculatescale = calculateNote(value).concat(calculateOctave(value));
@@ -153,7 +161,8 @@ function calculateOctave (valueString) {
       reverb.value = mapNumber (beta, 0, 200, 0, 100);
       console.log(reverb.value);
 
-    socket.emit('sendData', calculatescale);
+      // socket.emit('sendData', calculatescale);
+      socket.emit('sendData', sequence);
     });
   }
 });
@@ -168,7 +177,7 @@ document.getElementById("collab").addEventListener("click", async () => {
   Tone.Transport.start();
   player.start()
 });
-  
+
 // synth stop
   document.getElementById("synthstop").addEventListener("click", async () => {
     Tone.Transport.stop();
@@ -178,13 +187,15 @@ document.getElementById("collab").addEventListener("click", async () => {
   //listening for socket messages(note && octave)
   socket.on("hello", (data) => {
     console.log(data);
+    sequence = data; // assuming this is your array
+    synthPart = newPart() // make a new synth part
 
 //Membrane Synth
 // if (musicplayed == false) {
-  setTimeout(function(){
-
-    sampler.triggerAttackRelease(data);
-  }, 500); 
+  // setTimeout(function(){
+  //
+  //   sampler.triggerAttackRelease(data);
+  // }, 500);
   // synthPart1 = new Tone.Loop(
   //   function(time) {
   //     synth1.triggerAttackRelease(data);
