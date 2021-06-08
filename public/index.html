@@ -6,10 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/@tonaljs/tonal/browser/tonal.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.15/Tone.js"></script>
-    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/addons/p5.sound.min.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Biophonica</title>
 </head>
 <body>
-    <button onclick="document.location='/player1'">player1</button>
-    <button onclick="document.location='/player2'">player2</button>
+    <div id="buttons">
+        <button onclick="document.location='/player1'" id="player1" style="font-family:'arialbold'">user 1</button>
+        <button onclick="document.location='/player2'" id="player2" style="font-family:'arialbold'">user 2</button>
+    </div>    
+    <script src="sketch.js"></script>
 </body>
 </html>

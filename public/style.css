@@ -1,0 +1,33 @@
+@font-face {
+    font-family: "arialbold";
+    src: url("arialbold.ttf");
+}
+
+#buttons {
+    display: flex;
+    padding: 20px;
+    flex: inherit;
+    justify-content: space-around;
+}
+
+#player1 {
+    padding: 1%;
+    margin-bottom: 5%;
+    background-color: black;
+    color: rgba(255, 255, 255, 0.795);
+    border: 1px solid rgba(255, 255, 255, 0.795);
+    cursor: pointer;
+    outline: 2px white;
+    border-radius: 10px;
+}
+
+#player2 {
+    padding: 1%;
+    margin-bottom: 5%;
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.795);
+    border: 1px solid rgba(255, 255, 255, 0.795);
+    cursor: pointer;
+    border-radius: 10px;
+    
+}

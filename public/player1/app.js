@@ -2,7 +2,7 @@
 let notes = ["C", "D", "E", "F", "G", "A", "B"];
 let sequence = ["C1", "D1", "E1", "F1", "G2", "A1", "B1"];
 var calculatescale = 1;
-let alpha, beta, gamma;
+let anglea, beta, gamma;
 let synthPart1;
 let player = new Tone.Player("assets/water_up.wav", {loop: true});//add loop
 let synth1 = new Tone.MetalSynth().toDestination();
@@ -68,7 +68,7 @@ window.addEventListener('load', function () {
     //   event.acceleration.y + " m/s2 ",
     //   event.acceleration.z + " m/s2");
 
-    if (event.acceleration.x > 0.1) {
+    if (event.acceleration.x > 1) {
       sampler1.triggerAttackRelease("C3");
     }
   });
@@ -103,11 +103,11 @@ document
         // in the alpha-beta-gamma axes (units in degrees)
         window.addEventListener("deviceorientation", e => {
           console.log(e);
-          alpha = document.getElementById("alpha").innerHTML = e.alpha;
+          anglea = document.getElementById("alpha").innerHTML = e.alpha;
           document.getElementById("beta").innerHTML = e.beta;
           document.getElementById("gama").innerHTML = e.gamma;
 
-          let value = Math.floor(mapNumber(alpha, 0, 360, 0, 30));
+          let value = Math.floor(mapNumber(anglea, 0, 360, 0, 30));
           calculatescale = calculateNote(value).concat(calculateOctave(value));
         });
       };
@@ -141,11 +141,11 @@ function calculateOctave (valueString) {
   function startDeviceOrientation() {
     window.addEventListener("deviceorientation", e => {
       console.log(e);
-      alpha = document.getElementById("alpha").innerHTML = e.alpha;
+      anglea = document.getElementById("alpha").innerHTML = e.alpha;
       beta = document.getElementById("beta").innerHTML = e.beta;
       gamma = document.getElementById("gama").innerHTML = e.gamma;
      
-      let value = Math.floor(mapNumber(alpha, 0, 360, 0, 30));
+      let value = Math.floor(mapNumber(anglea, 0, 360, 0, 30));
 
       calculatescale = calculateNote(value).concat(calculateOctave(value));
 

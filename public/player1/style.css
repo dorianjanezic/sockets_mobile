@@ -1,0 +1,48 @@
+@charset "UTF-8";
+
+@font-face {
+    font-family: "arialbold";
+    src: url("arialbold.ttf");
+}
+
+#angles {
+    color: rgba(255, 255, 255, 0.795);
+    display: grid;
+    font-family: "arialbold";
+    justify-content: center;
+}
+.buttons {
+    
+    padding: 20px;
+    padding: 1%;
+    margin-bottom: 5%;
+    background-color: black;
+    color: rgba(255, 255, 255, 0.795);
+    border: 1px solid rgba(255, 255, 255, 0.795);
+    cursor: pointer;
+    outline: 2px white;
+    border-radius: 10px;
+}
+
+.buttons:hover {
+    background-color: rgba(255, 255, 255, 0.795);
+    outline:2px black;
+    color: black;
+    border: black;
+}
+
+#connection {
+    display: flex;
+    padding: 20px;
+    flex: inherit;
+    justify-content: space-around;
+    padding: 3%;
+}
+
+#tone {
+    display: flex;
+    padding: 20px;
+    flex: inherit;
+    justify-content: space-around;
+    padding: 3%;
+}
