@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tonaljs/tonal/browser/tonal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.15/Tone.js"></script>
+    <title>player 2</title>
+</head>
+<body>
+    <script src="three.min.js"></script>
+    <script src="OBJLoader.js"></script>
+    <script src="MTLLoader.js"></script>
+
+    <button id="button">CONNECT</button>       
+    <button id="accelPermsButton">Get Accelerometer Permissions</button>
+
+    <p>αlphα = Z axis</p>
+    <p id="alpha">α</p>
+    
+    <p>βeta = X axis</p>
+    <p id="beta">β</p>
+    
+    <p>γamma = Y axis</p>
+    <p id="gama">γ</p>
+
+    <button id="synthstart">start synth</button>
+    <button id="synthstop">stop synth</button>
+    <button id="collab">listen for others</button>
+    
+    <script src="/socket.io/socket.io.js"></script>    
+    <script src="app.js"></script>    
+</body>
+</html>

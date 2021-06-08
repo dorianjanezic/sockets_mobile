@@ -12,10 +12,12 @@ server.listen(port, () => {
 });
 
 let io = require('socket.io')(server);
+let player1 = io.of('player1');
+let player2 = io.of('/player2')
 
-//Listen for individual clients/users to connect
-io.sockets.on('connection', function(socket) {
-    console.log("We have a new client: " + socket.id);
+//player1 namespace
+player1.on('connection', function(socket) {
+    console.log("We have a new player1: " + socket.id);
 
     socket.on('sendData', (data) => {
        socket.broadcast.emit("hello", data);
@@ -23,6 +25,15 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('filterValue', (data) => {
         console.log(data);
-        socket.broadcast.emit("filter", data);
+        player2.emit("filter", data);
     })
 });
+
+//player2 namespace
+player2.on('connection', function(socket) {
+    console.log("We have a new player2: " + socket.id);
+    socket.on('sendData', (data) => {
+        console.log(data);
+        player1.emit("hello", data);
+     });
+})
