@@ -107,6 +107,7 @@ document
 
           let value = Math.floor(mapNumber(alpha, 0, 360, 0, 30));
           calculatescale = calculateNote(value).concat(calculateOctave(value));
+          player2.emit('sendData', calculatescale);
         });
       };
     });

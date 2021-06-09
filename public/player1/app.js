@@ -4,7 +4,8 @@ let sequence = ["C1", "D1", "E1", "F1", "G2", "A1", "B1"];
 var calculatescale = 1;
 let anglea, beta, gamma;
 let synthPart1;
-let player = new Tone.Player("assets/water_up.wav", {loop: true});//add loop
+let player = new Tone.Player("assets/water_up.wav");
+player.loop = true;
 let synth1 = new Tone.MetalSynth().toDestination();
 let musicplayed = false;
 let filtervalue;
@@ -25,7 +26,7 @@ let reverb = new Tone.Reverb(gamma);
 const gain = new Tone.Volume(-100);
 
 //player
-player.connect(filter).connect(reverb);
+player.connect(filter).loop;
 
 //sampler 1
 var sampler = new Tone.Sampler({
@@ -37,7 +38,7 @@ sampler.connect(gain).toDestination();
 
 //sampler 2 
 var sampler1 = new Tone.Sampler({
-  "C3" : "assets/cow.wav"
+  "C3" : "assets/whaleclip.wav"
 },
 function(){
 });
@@ -67,7 +68,7 @@ window.addEventListener('load', function () {
     //   event.acceleration.y + " m/s2 ",
     //   event.acceleration.z + " m/s2");
 
-    if (event.acceleration.x > 1) {
+    if (event.acceleration.x > 5) {
       sampler1.triggerAttackRelease("C3");
     }
   });
@@ -105,6 +106,9 @@ document
           anglea = document.getElementById("alpha").innerHTML = e.alpha;
           document.getElementById("beta").innerHTML = e.beta;
           document.getElementById("gama").innerHTML = e.gamma;
+
+          filtervalue = filter.frequency.value = mapNumber (beta, 0, 100, 0, 720);
+          player1.emit('filterValue', beta);
 
           let value = Math.floor(mapNumber(anglea, 0, 360, 0, 30));
           calculatescale = calculateNote(value).concat(calculateOctave(value));

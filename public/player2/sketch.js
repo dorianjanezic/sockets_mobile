@@ -30,4 +30,9 @@ function setup() {
 
 function draw() {
     background(0);
+
+    fill(56,115,133);
+    textFont(myFont);
+    textSize(64);
+    text('oceania', windowWidth/2-130,windowHeight/5);
 }
