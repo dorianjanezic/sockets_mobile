@@ -50,7 +50,7 @@ const synthPart = new Tone.Sequence(
     notes,
     "1n"
   );
-  // synthPart.start();
+  synthPart.start();
 
 //Initialize Sockets
 let player2 = io('/player2');
@@ -159,13 +159,11 @@ function calculateOctave (valueString) {
 });
 document.getElementById("synthstart").addEventListener("click", async () => {
   await Tone.start();
-  player.start()
   Tone.Transport.start();
 });
 
 document.getElementById("collab").addEventListener("click", async () => {
   await Tone.start();
-  Tone.Transport.start();
   player.start()
 });
   
