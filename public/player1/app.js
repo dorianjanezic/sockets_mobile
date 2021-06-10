@@ -38,11 +38,18 @@ sampler.connect(gain).toDestination();
 
 //sampler 2 
 var sampler1 = new Tone.Sampler({
-  "C3" : "assets/whaleclip.wav"
+  "C3" : "assets/whaleedit.wav"
 },
 function(){
 });
 sampler1.toDestination()
+//sampler 3
+var sampler2 = new Tone.Sampler({
+  "C3" : "assets/bomb.wav"
+},
+function(){
+});
+sampler2.toDestination()
 //Sequence object (lower the volume of the sample)
 const synthPart = new Tone.Sequence(
     function(time, note) {
@@ -70,6 +77,7 @@ window.addEventListener('load', function () {
 
     if (event.acceleration.x > 5) {
       sampler1.triggerAttackRelease("C3");
+      player1.emit('playerstart', 'play');
     }
   });
 
@@ -107,7 +115,7 @@ document
           document.getElementById("beta").innerHTML = e.beta;
           document.getElementById("gama").innerHTML = e.gamma;
 
-          filtervalue = filter.frequency.value = mapNumber (beta, 0, 100, 0, 720);
+          filtervalue = filter.frequency.value = mapNumber (beta, -30, 100, 0, 720);
           player1.emit('filterValue', beta);
 
           let value = Math.floor(mapNumber(anglea, 0, 360, 0, 30));
@@ -206,4 +214,8 @@ incomingmsg = data;
 //   filter.frequency.value = data;
 //   console.log(filter.frequency.value)
 //   player.connect(filter);
+});
+player1.on('playerstart', (data) => {
+  sampler2.triggerAttackRelease("C3");
+  // sampler1.start();
 });
