@@ -12,7 +12,7 @@ server.listen(port, () => {
 });
 
 let io = require('socket.io')(server);
-let player1 = io.of('player1');
+let player1 = io.of('/player1');
 let player2 = io.of('/player2')
 
 //player1 namespace
@@ -24,8 +24,11 @@ player1.on('connection', function(socket) {
     });
 
     socket.on('filterValue', (data) => {
-        console.log(data);
         player2.emit("filter", data);
+    });
+
+    socket.on('playerstart', (data) => {
+        player2.emit('playerstart', data);
     })
 });
 
@@ -33,7 +36,9 @@ player1.on('connection', function(socket) {
 player2.on('connection', function(socket) {
     console.log("We have a new player2: " + socket.id);
     socket.on('sendData', (data) => {
-        console.log(data);
         player1.emit("hello", data);
      });
+     socket.on('playerstart', (data) => {
+         player1.emit('playerstart', data);
+     })
 })

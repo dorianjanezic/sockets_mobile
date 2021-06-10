@@ -28,7 +28,8 @@
     background-color: rgba(255, 255, 255, 0.795);
     outline:2px black;
     color: black;
-    border: black;
+    border:1px black;
+    outline: 2px transparent;
 }
 
 #connection {

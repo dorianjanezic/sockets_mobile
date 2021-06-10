@@ -4,7 +4,8 @@ let sequence = ["C1", "D1", "E1", "F1", "G2", "A1", "B1"];
 var calculatescale = 1;
 let alpha, beta, gamma;
 let synthPart1;
-let player = new Tone.Player("assets/water_up.wav", {loop: true});//add loop
+let player = new Tone.Player("assets/water_up.wav");//add loop
+player.loop = true;
 let synth1 = new Tone.MetalSynth().toDestination();
 let musicplayed = false;
 let filtervalue;
@@ -37,11 +38,18 @@ sampler.connect(gain).toDestination();
 
 //sampler 2 
 var sampler1 = new Tone.Sampler({
-  "C3" : "assets/cow.wav"
+  "C3" : "assets/whaleedit.wav"
 },
 function(){
 });
 sampler1.toDestination()
+//sampler 3 
+var sampler2 = new Tone.Sampler({
+  "C3" : "assets/bomb.wav"
+},
+function(){
+});
+sampler2.toDestination()
 //Sequence object (lower the volume of the sample)
 const synthPart = new Tone.Sequence(
     function(time, note) {
@@ -66,9 +74,10 @@ window.addEventListener('load', function () {
     //   event.acceleration.y + " m/s2 ",
     //   event.acceleration.z + " m/s2");
 
-    if (event.acceleration.x > 0.5) {
-      sampler1.triggerAttackRelease("C3");
-    }
+    if (event.acceleration.x > 10) {
+      sampler2.triggerAttackRelease("C3");
+      player1.emit('playerstart', 'play');
+    };
   });
 
 
@@ -148,9 +157,6 @@ function calculateOctave (valueString) {
 
       calculatescale = calculateNote(value).concat(calculateOctave(value));
 
-      filtervalue = filter.frequency.value = mapNumber (beta, 0, 100, 0, 720);
-      player2.emit('filterValue', filtervalue);
-
       reverb.value = mapNumber (beta, 0, 200, 0, 100);
       console.log(reverb.value);
 
@@ -200,13 +206,14 @@ function mapNumber(number, inMin, inMax, outMin, outMax) {
   return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
 };
   filter.frequency.value = mapNumber (data, 0, 100, 0, 600)
-  
-
 
 //player
 player.connect(filter).connect(reverb);
 console.log("hey")
 
-}
+});
 
-,);
+player2.on('playerstart', (data) => {
+  sampler1.triggerAttackRelease("C3");
+  // sampler1.start();
+});

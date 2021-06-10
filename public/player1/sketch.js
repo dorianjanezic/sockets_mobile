@@ -34,5 +34,5 @@ function draw() {
     fill(56,115,133);
     textFont(myFont);
     textSize(64);
-    text('oceania', windowWidth/2-130,windowHeight/5);
+    text('oceania', windowWidth/2-130,windowHeight/4);
 }

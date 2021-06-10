@@ -25,6 +25,9 @@ function setup() {
   x1speed = 1
   y = 0
   yspeed = 0.5
+
+  let player = new Tone.Player("assets/32_50.wav");
+  player.autostart = true;
   
 //   button = createButton('submit');
 //   button.position(350, 100);
