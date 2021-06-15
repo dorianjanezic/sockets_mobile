@@ -1,5 +1,5 @@
 //global variables
-let notes = ["C", "D", "E", "F", "G", "A", "B"];
+let notes = ["C", "D", "E", "F"];
 let sequence = ["C1", "D1", "E1", "F1", "G2", "A1", "B1"];
 var calculatescale = 1;
 let alpha, beta, gamma;
@@ -10,10 +10,27 @@ let synth1 = new Tone.MetalSynth().toDestination();
 let musicplayed = false;
 let filtervalue;
 const delay = new Tone.Delay(1).toDestination();
+//global p5 variables
+let button;
+let canvas;
+var mic;
+
+var formResolution = 15;
+var stepSize = 2;
+var distortionFactor = 1;
+var initRadius = 150;
+var centerX;
+var centerY;
+var x = [];
+var y = [];
+
+var filled = false;
+var freeze = false;
+
 
 //filter
 const filter = new Tone.Filter(400, "lowpass").toDestination();
-console.log(filter.frequency.value);
+
 //Membrane Synth
 const synth = new Tone.MembraneSynth().toDestination();
 
@@ -60,13 +77,142 @@ const synthPart = new Tone.Sequence(
   );
   synthPart.start();
 
+//load font
+let myFont;
+function preload() {
+  myFont = loadFont('arialbold.ttf');
+}
+
+function windowResized () {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
+function setup() {
+  canvas = createCanvas(windowWidth, windowHeight);
+  canvas.position(0,0);
+  canvas.style('z-index', '-1');
+  // mic = new p5.AudioIn();
+  // mic.start();
+
+
+
+  // init shape
+  centerX = width / 2;
+  centerY = height / 2;
+  var angle = radians(360 / formResolution);
+  for (var i = 0; i < formResolution; i++) {
+    x.push(cos(angle * i) * initRadius);
+    y.push(sin(angle * i) * initRadius);
+  }
+
+  stroke(0, 50);
+  strokeWeight(0.75);
+  background(255);
+}
+
+function draw() {
+  colorvalue = mapNumber (alpha, 0, 360, 0, 255)
+    
+
+    fill(56,115,133);
+    textFont(myFont);
+    textSize(64);
+ 
+    text('oceania', windowWidth/2-130,windowHeight/2);
+
+
+    // floating towards mouse position
+  centerX += (mouseX - centerX) * 0.01;
+  centerY += (mouseY - centerY) * 0.01;
+
+
+  // calculate new points
+  for (var i = 0; i < formResolution; i++) {
+    x[i] += random(-stepSize, stepSize);
+    y[i] += random(-stepSize, stepSize);
+    // uncomment the following line to show position of the agents
+    // ellipse(x[i] + centerX, y[i] + centerY, 5, 5);
+  }
+
+  if (filled) {
+    fill(random(255));
+  } else {
+    noFill();
+  }
+
+  beginShape();
+  // first controlpoint
+  curveVertex(x[formResolution - 1] + centerX, y[formResolution - 1] + centerY);
+
+  // only these points are drawn
+  for (var i = 0; i < formResolution; i++) {
+    curveVertex(x[i] + centerX, y[i] + centerY);
+  }
+  curveVertex(x[0] + centerX, y[0] + centerY);
+
+  // end controlpoint
+  curveVertex(x[1] + centerX, y[1] + centerY);
+  endShape();
+}
+
+function mousePressed() {
+  // init shape on mouse position
+  centerX = mouseX;
+  centerY = mouseY;
+  var angle = radians(360 / formResolution);
+  var radius = initRadius * random(0.5, 1);
+  for (var i = 0; i < formResolution; i++) {
+    x[i] = cos(angle * i) * initRadius;
+    y[i] = sin(angle * i) * initRadius;
+  }
+}
+
 //Initialize Sockets
 let player2 = io('/player2');
     player2.on('connect', function (data) {
         console.log("Connected");
     });
 
+//map range
+function mapNumber(number, inMin, inMax, outMin, outMax) {
+  return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+};
+
+function calculateNote (valueString) {
+    let iterval = parseInt(valueString)% 7;
+    return (notes[iterval])
+};
+function calculateOctave (valueString) {
+    let iterval = Math.floor(parseInt(valueString)/ 7);
+    return (iterval.toString());
+};
+
+document.getElementById("synthstart").addEventListener("click", async () => {
+  await Tone.start();
+  Tone.Transport.start();
+});
+
+document.getElementById("collab").addEventListener("click", async () => {
+  await Tone.start();
+  player.start()
+});
+  
+// synth stop
+document.getElementById("synthstop").addEventListener("click", async () => {
+  Tone.Transport.stop();
+  player.stop();
+});
+
 window.addEventListener('load', function () {
+
+  document.getElementById("button").addEventListener("click", async () => {
+    console.log("here");
+      if (isIOSDevice()) {
+        getAccel();
+      } else {
+      startDeviceOrientation();
+      }; 
+  });
 
   window.addEventListener('devicemotion', function(event) {
     // console.log(
@@ -80,25 +226,16 @@ window.addEventListener('load', function () {
     };
   });
 
-
-var px = 50; // Position x and y
-var py = 50;
-var vx = 0.0; // Velocity x and y
-var vy = 0.0;
-var updateRate = 1 / 60; // Sensor refresh rate
-// synth start
-function isIOSDevice() {
-  return !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
-}
-document
-  .getElementById("accelPermsButton")
-  .addEventListener("click", async () => {
+  function isIOSDevice() {
+    return !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+  };
+  document.getElementById("accelPermsButton").addEventListener("click", async () => {
     console.log("ab");
     
     if (isIOSDevice()) {
       console.log("I am an IOS device!");
       getAccel();
-    }
+    };
   });
 
   //android devices access motion sensor
@@ -114,7 +251,10 @@ document
           document.getElementById("beta").innerHTML = e.beta;
           document.getElementById("gama").innerHTML = e.gamma;
 
-          let value = Math.floor(mapNumber(alpha, 0, 360, 0, 30));
+          if (alpha = 0) {
+            background(100,100,100)
+          }
+          let value = Math.floor(mapNumber(alpha, 0, 360, 0, 7));
           calculatescale = calculateNote(value).concat(calculateOctave(value));
           player2.emit('sendData', calculatescale);
         });
@@ -122,82 +262,28 @@ document
     });
   };
 
-//map range
-function mapNumber(number, inMin, inMax, outMin, outMax) {
-  return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
-};
-
-function calculateNote (valueString) {
-    let iterval = parseInt(valueString)% 7;
-    return (notes[iterval]);
-  };
-function calculateOctave (valueString) {
-    let iterval = Math.floor(parseInt(valueString)/ 7);
-    return (iterval.toString());
-  };
-
-  document.getElementById("button").addEventListener("click", async () => {
-    console.log("here");
-    if (isIOSDevice()) {
-  getAccel();
-} else {
-  startDeviceOrientation();
-}
-});
-
-//Console log euler angles
+  //Console log euler angles
   function startDeviceOrientation() {
     window.addEventListener("deviceorientation", e => {
       console.log(e);
-      alpha = document.getElementById("alpha").innerHTML = e.alpha;
-      beta = document.getElementById("beta").innerHTML = e.beta;
-      gamma = document.getElementById("gama").innerHTML = e.gamma;
+      alpha = e.alpha;
+      beta = e.beta;
+      gamma = e.gamma;
      
       let value = Math.floor(mapNumber(alpha, 0, 360, 0, 30));
 
       calculatescale = calculateNote(value).concat(calculateOctave(value));
+      player2.emit('sendData', calculatescale);
 
       reverb.value = mapNumber (beta, 0, 200, 0, 100);
       console.log(reverb.value);
-
-    player2.emit('sendData', calculatescale);
     });
-  }
+  };
 });
-document.getElementById("synthstart").addEventListener("click", async () => {
-  await Tone.start();
-  Tone.Transport.start();
-});
-
-document.getElementById("collab").addEventListener("click", async () => {
-  await Tone.start();
-  player.start()
-});
-  
-// synth stop
-  document.getElementById("synthstop").addEventListener("click", async () => {
-    Tone.Transport.stop();
-    player.stop();
-  });
 
   //listening for socket messages(note && octave)
-  player2.on("hello", (data) => {
-    console.log(data);
-
-//Membrane Synth
-// if (musicplayed == false) {
-  // setTimeout(function(){
-
-  //   sampler.triggerAttackRelease(data);
-  // }, 500); 
-  // synthPart1 = new Tone.Loop(
-  //   function(time) {
-  //     synth1.triggerAttackRelease(data);
-  //   }, "8n").start(0)
-  //   synthPart1.start()
-  // musicplayed = true
-  // }
-
+player2.on("hello", (data) => {
+  console.log(data);
 });
 
 player2.on('filter', (data) => {
@@ -210,7 +296,6 @@ function mapNumber(number, inMin, inMax, outMin, outMax) {
 //player
 player.connect(filter).connect(reverb);
 console.log("hey")
-
 });
 
 player2.on('playerstart', (data) => {

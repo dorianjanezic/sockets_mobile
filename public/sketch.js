@@ -1,3 +1,5 @@
+
+
 //global variables
 let button;
 let canvas;
@@ -22,12 +24,19 @@ function setup() {
   x = 0
   xspeed = 1
   x1 = width
-  x1speed = 1
+  x1speed = -1
   y = 0
   yspeed = 0.5
 
   let player = new Tone.Player("assets/32_50.wav");
   player.autostart = true;
+
+  //text biophonica
+  fill(255,200);
+  textFont(myFont);
+  textSize(64);
+  textAlign(CENTER, CENTER)
+  text('biophonica', windowWidth/2-175,windowHeight/2+300);
   
 //   button = createButton('submit');
 //   button.position(350, 100);
@@ -52,8 +61,8 @@ function draw() {
   fill(255,255,255,200)
   noStroke()
   
-  if (x > width || x < 0) {
-    xspeed *= -1
+  if (x == width/2+60 ) {
+    xspeed *= 0
   }
   
    x = x + xspeed;
@@ -61,8 +70,8 @@ function draw() {
   // + (vol*10000) 
   circle(x, windowHeight/2,200)
   
-  if (x1 > width || x1 < 0) {
-    x1speed *= -1
+  if (x1 == width/2-60) {
+    x1speed *= 0
   }
   
   x1 = x1 + x1speed
@@ -78,12 +87,21 @@ function draw() {
   y = y + yspeed
   // + (vol*10000)
   circle(windowWidth/2,y, 200)
+
+  if (xspeed == 0) {
+    document.getElementById('player2').style.visibility = visible;
+  }
+
+  fill(255,200)
+  textFont(myFont)
+  textSize(12)
+  text('Geophony is a category of eco-acoustics which has the longest history and it relates to natural forces, such as water, wind and thunder.',100,20)
+  fill(255,200)
+  textFont(myFont)
+  textSize(12)
+  text('Vocalizations of animal sounds are categorized as biophony while antropophony represnt human generated soun from either humnas, themselves, or the electro-mechanical technologies they employ.', 80, 40)
   
-  //text biophonica
-  fill(255,200);
-  textFont(myFont);
-  textSize(64);
-  text('biophonica', windowWidth/2-175,windowHeight/2+300);
+  
 };
 
 function myInputEvent() {

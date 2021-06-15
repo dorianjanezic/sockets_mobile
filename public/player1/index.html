@@ -17,11 +17,25 @@
     <script src="MTLLoader.js"></script>
     <script src="/socket.io/socket.io.js"></script>   
 
-    <div id="connection" style="font-family:'arialbold'">
-        <button id="button" class="buttons" style="font-family:'arialbold'">connect to sensors</button>
-    </div>
 
-        <div id="angles">
+    <button id="accelPermsButton" style="font-family:'arialbold'"></button>
+    <div id="connection" style="font-family:'arialbold'">
+        <!-- <button id="button" class="buttons" style="font-family:'arialbold'">-->
+            <svg width="120" height="120"> 
+                <a href="#" id="button">
+                <circle cx="60"
+                        cy="60"
+                        r="40" 
+                        fill = "#387385"
+                        fill-opacity="0.5"/>
+                    </a>
+              </svg>
+            
+            
+    </div>
+   
+
+      <!-- <div id="angles">
             <p>alpha = Z axis</p>
             <p id="alpha">α</p>
             
@@ -30,16 +44,16 @@
             
             <p>gamma = Y axis</p>
             <p id="gama">γ</p>
-        </div>
+        </div> -->
 
-    <div id="tone" style="font-family:'arialbold'">
-        <button id="synthstart" class="buttons" style="font-family:'arialbold'">start</button>
-        <button id="synthstop" class="buttons" style="font-family:'arialbold'">stop</button>
-        <button id="collab" class="buttons" style="font-family:'arialbold'">interact</button>
-    </div>
-
-    <script src="sketch.js"></script>
-    <script src="app.js"></script>    
     
+        <!-- <button id="synthstart" class="buttons" style="font-family:'arialbold'">start -->
+     
+      
+        <!-- <button id="synthstop" class="buttons" style="font-family:'arialbold'">stop</button>
+        <button id="collab" class="buttons" style="font-family:'arialbold'">interact</button> -->
+    
+    
+    <script src="app.js"></script>    
 </body>
 </html>

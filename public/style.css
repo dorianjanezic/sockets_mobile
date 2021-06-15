@@ -36,13 +36,14 @@
     border: 1px solid rgba(255, 255, 255, 0.795);
     cursor: pointer;
     border-radius: 10px;   
+    visibility: hidden;
 }
 
 #player2:hover {
-    background-color: rgba(255, 255, 255, 0.795);
-    outline:2px black;
+    background-color: rgba(255, 255, 255, 0.795); 
+ 
     color: black;
-    border: black;
+   
 }
 
 #description {

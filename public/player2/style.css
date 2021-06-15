@@ -10,7 +10,9 @@
     display: grid;
     font-family: "arialbold";
     justify-content: center;
+    visibility: hidden;
 }
+
 .buttons {
     
     padding: 20px;
@@ -26,10 +28,9 @@
 
 .buttons:hover {
     background-color: rgba(255, 255, 255, 0.795);
-    outline:2px black;
+    
     color: black;
-    border:1px black;
-    outline: 2px transparent;
+    
 }
 
 #connection {
@@ -46,4 +47,8 @@
     flex: inherit;
     justify-content: space-around;
     padding: 3%;
+}
+
+#accelPermsButton {
+    visibility: hidden;
 }

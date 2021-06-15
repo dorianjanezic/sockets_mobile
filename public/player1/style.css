@@ -5,11 +5,16 @@
     src: url("arialbold.ttf");
 }
 
+html, body {
+    height: 100%;
+}
+
 #angles {
-    color: rgba(255, 255, 255, 0.795);
+    color: rgba(5, 5, 5, 0.795);
     display: grid;
     font-family: "arialbold";
     justify-content: center;
+    visibility: hidden;
 }
 .buttons {
     
@@ -26,17 +31,16 @@
 
 .buttons:hover {
     background-color: rgba(255, 255, 255, 0.795);
-    outline:2px black;
-    color: black;
-    border: black;
+        color: black;
+  
 }
 
 #connection {
-    display: flex;
-    padding: 20px;
-    flex: inherit;
-    justify-content: space-around;
-    padding: 3%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-42.45%, -42.3%);
 }
 
 #tone {
@@ -44,5 +48,8 @@
     padding: 20px;
     flex: inherit;
     justify-content: space-around;
-    padding: 3%;
+}
+
+#accelPermsButton {
+    visibility: hidden;
 }
