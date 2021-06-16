@@ -1,9 +1,9 @@
 
-
 //global variables
 let button;
 let canvas;
 var mic;
+let anglea, beta, gamma;
 
 //load font
 let myFont;
@@ -15,13 +15,64 @@ function windowResized () {
   resizeCanvas(windowWidth, windowHeight);
 }
 
+window.addEventListener('load', function () {
+
+  document.getElementById("motion").addEventListener("click", async () => {
+    console.log("here");
+      if (isIOSDevice()) {
+        getAccel();
+        
+      } else {
+      startDeviceOrientation();
+  };
+});
+
+  function isIOSDevice() {
+    return !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+  };
+
+  document.getElementById("accelPermsButton").addEventListener("click", async () => {
+    console.log("ab");
+    
+    if (isIOSDevice()) {
+      console.log("I am an IOS device!");
+      getAccel();
+    };
+  });
+
+  //android devices access motion sensor
+  function getAccel() {
+    console.log("a");
+    DeviceMotionEvent.requestPermission().then(response => {
+      if (response == "granted") {
+        // Add a listener to get smartphone orientation
+        // in the alpha-beta-gamma axes (units in degrees)
+        window.addEventListener("deviceorientation", e => {
+          console.log(e);
+          anglea = document.getElementById("alpha").innerHTML = e.alpha;
+          beta = document.getElementById("beta").innerHTML = e.beta;
+          document.getElementById("gama").innerHTML = e.gamma;
+        });
+      };
+    });
+  };
+
+      //Console log euler angles
+    function startDeviceOrientation() {
+      window.addEventListener("deviceorientation", e => {
+        anglea = e.alpha;
+        beta  = e.beta;
+        gamma = e.gamma;
+      });
+    };
+});
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
   canvas.position(0,0);
   canvas.style('z-index', '-1');
   // mic = new p5.AudioIn();
   // mic.start();
-  x = 0
+  x = 1
   xspeed = 1
   x1 = width
   x1speed = -1
@@ -49,20 +100,24 @@ function setup() {
 //   let topicinp = createInput('topic');
 //   topicinp.position(200,100);
 //   topicinp.size(100);
-  
+  background(0);
 }
 
 function draw() {
-  background(0);
-
+  
+  stroke(56,115,133)
+  noFill()
+strokeWeight(map(gamma, -60, 60, 0, 0.4));
+circle(windowWidth/2, windowHeight/2, (map(beta,-20,60,0, windowHeight)*3)*cos(millis(100)));
   // var vol = mic.getLevel();
   
-  //background circles
-  fill(255,255,255,200)
-  noStroke()
+  // /background circles
+  noFill()
+ stroke(56,115,133)
+ strokeWeight(0.08)
   
-  if (x == width/2+60 ) {
-    xspeed *= 0
+  if (x == width) {
+    xspeed *= -1
   }
   
    x = x + xspeed;
@@ -70,8 +125,8 @@ function draw() {
   // + (vol*10000) 
   circle(x, windowHeight/2,200)
   
-  if (x1 == width/2-60) {
-    x1speed *= 0
+  if (x1 == 0) {
+    x1speed *= -1
   }
   
   x1 = x1 + x1speed
@@ -79,28 +134,32 @@ function draw() {
   circle(x1,windowHeight/2,200)
   
   //center circle
-  fill(53, 171, 28,170)
+  // fill(53, 171, 28,170)
+  noFill()
   
   if (y < 0 || y > windowHeight/2) {
     yspeed *= 0
   }
   y = y + yspeed
   // + (vol*10000)
-  circle(windowWidth/2,y, 200)
+  circle(windowWidth/2,y, 198)
 
-  if (xspeed == 0) {
-    document.getElementById('player2').style.visibility = visible;
-  }
+  // if (xspeed == 0) {
+    
+  // }
 
-  fill(255,200)
-  textFont(myFont)
-  textSize(12)
-  text('Geophony is a category of eco-acoustics which has the longest history and it relates to natural forces, such as water, wind and thunder.',100,20)
-  fill(255,200)
-  textFont(myFont)
-  textSize(12)
-  text('Vocalizations of animal sounds are categorized as biophony while antropophony represnt human generated soun from either humnas, themselves, or the electro-mechanical technologies they employ.', 80, 40)
-  
+  // fill(255,200)
+  // textFont(myFont)
+  // textSize(20)
+  // text('Geophony is a category of eco-acoustics which has the longest history and it relates to natural forces, such as water, wind and thunder.',width/2,20)
+  // fill(255,200)
+  // textFont(myFont)
+  // textSize(20)
+  // text('Vocalizations of animal sounds are categorized as biophony elemnent of bioacoustics', width/2, 40)
+  // fill(255,200)
+  // textFont(myFont);
+  // textSize(20)
+  // text('while antropophony represnt human generated soun from either humans, themselves, or the electro-mechanical technologies they employ.', width/2, 60)
   
 };
 

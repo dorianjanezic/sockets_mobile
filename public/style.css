@@ -5,13 +5,14 @@
 
 #buttons {
     display: flex;
-    padding: 10px;
+    padding: 50px;
     flex: inherit;
     justify-content: space-around;
 }
 
 #player1 {
     padding: 1%;
+    margin-top: 15%;
     margin-bottom: 5%;
     background-color: transparent;
     color: rgba(255, 255, 255, 0.795);
@@ -55,12 +56,16 @@
 
 }
 
+.text {
+    opacity: 0.1;
+}
+
 #nature {
     color: rgba(255, 255, 255, 0.795);  
     width: 100%;
-    height: 100px;
-    text-align: justify;
-    opacity: 0.4;
+    height: 50px;
+    text-align: center;
+    align-items: center;
 }
 
 #nature:hover {
@@ -70,11 +75,48 @@
 #human {
     color: rgba(255, 255, 255, 0.795);
     width: 100%;
-    height: 100px;
-    text-align: justify;
-    opacity: 0.4;
+    height: 50px;
+    text-align: center;
+    justify-content: space-around;
+    align-items: center;
 }
 
 #human:hover {
     opacity: 1;
+}
+
+#antro {
+    color: rgba(255, 255, 255, 0.795);
+    width: 100%;
+    text-align: center;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#antro:hover {
+    opacity: 1;
+}
+
+#accelPermsButton {
+    visibility: hidden;
+}
+
+#motion {
+    padding: 1%;
+    margin-top: 3%;
+    margin-bottom: 5%;
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.795);
+    border: 1px solid rgba(255, 255, 255, 0.795);
+    cursor: pointer;
+    outline: 2px white;
+    border-radius: 10px;
+    font-family: "arialbold";
+}
+
+#motion:hover {
+    background-color: rgba(255, 255, 255, 0.795);
+    
+    color: black;
+
 }

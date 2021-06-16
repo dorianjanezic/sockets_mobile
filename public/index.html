@@ -13,12 +13,18 @@
     <title>Biophonica</title>
 </head>
 <body>
+    <script src="/senLib/three.min.js"></script>
+    <script src="/senLib/OBJLoader.js"></script>
+    <script src="/senLib/MTLLoader.js"></script>
+    <!--ADD ANGLES TO THE CENTER CIRCLE-->
     <div id="description">
-        <p id="human">Embody a human-made machinery and interact with natural elements.</p>
-        <button onclick="document.location='/player2'" id="player2" style="font-family:'arialbold'">antropophony</button>
-        <p id="nature">Immerse yourself into an environment of an endangered ecosystem.</p>
+        <button id="motion">sensors</button>
+        <p id="human" class="text">Geophony is a category of eco-acoustics which has the longest history and it relates to natural forces, such as water, wind and thunder.</p>
+        <!-- <button onclick="document.location='/player2'" id="player2" style="font-family:'arialbold'">antropophony</button> -->
+        <p id="nature" class="text">Vocalizations of animal sounds are categorized as biophony element of bioacoustics</p>
+        <p id="antro" class="text"> Antropophony represents human generated sound from either humans, themselves, or the electro-mechanical technologies they employ.</p>
         <button onclick="document.location='/player1'" id="player1" style="font-family:'arialbold'">ecosystem</button>
-
+        <button id="accelPermsButton" style="font-family:'arialbold'">Get Accelerometer Permissions</button>
     </div>   
 
   

@@ -11,13 +11,13 @@
     <title>antropophony</title>
 </head>
 <body>
-    <script src="three.min.js"></script>
-    <script src="OBJLoader.js"></script>
-    <script src="MTLLoader.js"></script>
+    <script src="../senLib/three.min.js"></script>
+    <script src="../senLib/OBJLoader.js"></script>
+    <script src="../senLib/MTLLoader.js"></script>
     <script src="/socket.io/socket.io.js"></script>    
 
     <div id="connection" style="font-family:'arialbold'">
-        <button id="button" class="buttons" style="font-family:'arialbold'">connect to sensors</button>       
+        <button id="button" class="buttons" style="font-family:'arialbold'">connect</button>       
     </div>
     <button id="accelPermsButton" style="font-family:'arialbold'">Get Accelerometer Permissions</button>
         <div id="angles">
@@ -31,11 +31,11 @@
             <p id="gama">γ</p>
         </div>
 
-    <div id="tone" style="font-family:'arialbold'">
+    <!-- <div id="tone" style="font-family:'arialbold'">
         <button id="synthstart" class="buttons" style="font-family:'arialbold'">start</button>
         <button id="synthstop" class="buttons" style="font-family:'arialbold'">stop</button>
         <button id="collab" class="buttons" style="font-family:'arialbold'">interact</button>
-    </div>
+    </div> -->
     
     <script src="app.js"></script>    
 

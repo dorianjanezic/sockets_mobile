@@ -91,8 +91,8 @@ function setup() {
 function draw() {
   background(0);
   sensorValue = mapNumber(beta, -60, 90, -1.0, 1.0);
-  let x = random(200,windowWidth-30);
-  let y = random(200,windowWidth-30);
+  let x = width/2;
+  let y = height/2;
   let dia = map(sensorValue, -1, 1, 1, 1000);
   if (frameCount % 60 == 0) {
     effects.push(new Effect(x, y, dia));
@@ -122,8 +122,8 @@ class Effect {
     this.y = y;
     this.dia = dia;
 
-    this.growSpeed = 0.5;
-    this.lifespan = 5;
+    this.growSpeed = -0.5;
+    this.lifespan = 2;
     this.lifeReduction = random(0.01, 0.02);
     this.isDone = 0;
   }
@@ -143,7 +143,7 @@ class Effect {
     stroke(255, 255* this.lifespan);
     strokeWeight(0.5)
     noFill();
-    circle(this.x, this.y, this.dia);
+    ellipse(this.x, this.y, this.dia, this.dia);
     pop();
   }
 }

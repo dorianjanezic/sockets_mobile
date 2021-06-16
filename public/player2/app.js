@@ -1,171 +1,168 @@
+
 //global variables
 let notes = ["C", "D", "E", "F"];
-let sequence = ["C1", "D1", "E1", "F1", "G2", "A1", "B1"];
-var calculatescale = 1;
-let alpha, beta, gamma;
-let synthPart1;
-let player = new Tone.Player("assets/water_up.wav");//add loop
+let calculatescale = 1;
+let anglea, beta, gamma;
+let player = new Tone.Player("assets/glasswater.wav");//add loop
+let breath = new Tone.Player("assets/breath.wav").toDestination();
 player.loop = true;
-let synth1 = new Tone.MetalSynth().toDestination();
-let musicplayed = false;
 let filtervalue;
-const delay = new Tone.Delay(1).toDestination();
+let playing;
+let playerstarted = false;
+let startrotation = false;
+let effects = [];
+let sensorValue = 0;
+
 //global p5 variables
-let button;
 let canvas;
-var mic;
 
-var formResolution = 15;
-var stepSize = 2;
-var distortionFactor = 1;
-var initRadius = 150;
-var centerX;
-var centerY;
-var x = [];
-var y = [];
-
-var filled = false;
-var freeze = false;
-
-
-//filter
 const filter = new Tone.Filter(400, "lowpass").toDestination();
+player.connect(filter);
 
-//Membrane Synth
-const synth = new Tone.MembraneSynth().toDestination();
-
-player.connect(filter)
-
-//reverb
-let reverb = new Tone.Reverb(gamma);
-
-//gain
-const gain = new Tone.Volume(-100);
-
-//player
-player.connect(filter).connect(reverb);
-
-//sampler 1
 var sampler = new Tone.Sampler({
   "C3" : "assets/1st_chord_filter.wav"
 },
 function(){
 });
-sampler.connect(gain).toDestination();
+sampler.toDestination();
 
-//sampler 2 
 var sampler1 = new Tone.Sampler({
   "C3" : "assets/whaleedit.wav"
 },
 function(){
 });
 sampler1.toDestination()
-//sampler 3 
+
 var sampler2 = new Tone.Sampler({
   "C3" : "assets/bomb.wav"
 },
 function(){
 });
 sampler2.toDestination()
-//Sequence object (lower the volume of the sample)
+
 const synthPart = new Tone.Sequence(
-    function(time, note) {
-      sampler.triggerAttack(calculatescale);
-    },
-    notes,
-    "1n"
-  );
-  synthPart.start();
+  function(time, note) {
+    sampler.triggerAttack(calculatescale);
+  },
+  notes,
+  "1n"
+);
 
 //load font
 let myFont;
 function preload() {
   myFont = loadFont('arialbold.ttf');
-}
+};
 
 function windowResized () {
   resizeCanvas(windowWidth, windowHeight);
-}
+};
 
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
   canvas.position(0,0);
   canvas.style('z-index', '-1');
-  // mic = new p5.AudioIn();
-  // mic.start();
-
-
-
-  // init shape
-  centerX = width / 2;
-  centerY = height / 2;
-  var angle = radians(360 / formResolution);
-  for (var i = 0; i < formResolution; i++) {
-    x.push(cos(angle * i) * initRadius);
-    y.push(sin(angle * i) * initRadius);
-  }
-
-  stroke(0, 50);
-  strokeWeight(0.75);
-  background(255);
-}
+  background(0)
+  startRot();
+  
+};
 
 function draw() {
-  colorvalue = mapNumber (alpha, 0, 360, 0, 255)
-    
-
-    fill(56,115,133);
-    textFont(myFont);
-    textSize(64);
- 
-    text('oceania', windowWidth/2-130,windowHeight/2);
-
-
-    // floating towards mouse position
-  centerX += (mouseX - centerX) * 0.01;
-  centerY += (mouseY - centerY) * 0.01;
-
-
-  // calculate new points
-  for (var i = 0; i < formResolution; i++) {
-    x[i] += random(-stepSize, stepSize);
-    y[i] += random(-stepSize, stepSize);
-    // uncomment the following line to show position of the agents
-    // ellipse(x[i] + centerX, y[i] + centerY, 5, 5);
+  background(0)
+  if (anglea == 0 && playerstarted == false) {
+  background(56,115,133);
+  fill(255,200)
+  textFont(myFont)
+  textSize(40)
+  text('point your phone towards the ground to dive into the water', width/5, height/2);
+  player.start();
+  breath.start();
+  playerstarted = true;
+  
+  };
+}
+ function startRot() {
+  if (startrotation == false & anglea == 10) {
+    fill(56,115,133)
+  textFont(myFont)
+  textSize(40)
+  text('slowly rotate to your left to reach the bottom of the ocean', width/5, height/2);
+  startrotation = true;
   }
 
-  if (filled) {
-    fill(random(255));
-  } else {
+  if (playerstarted == true) {
+    sensorValue = mapNumber(beta, -60, 90, -1.0, 1.0);
+  let x = width/2;
+  let y = height/2;
+  let dia = map(sensorValue, -1, 1, 1, 1000);
+  if (frameCount % 60 == 0) {
+    effects.push(new Effect(x, y, dia));
+  };
+
+  for (let e of effects) {
+    e.grow();
+    e.age();
+    e.display();
+  }
+
+  while (effects.length > 500) {
+    effects.splice(0,1);
+  };
+
+  for (let i = effects.length -1; i >= 0; i--) {
+    let e = effects[i];
+    if (e.isDone) {
+      effects.splice(i,1)
+    }
+  }
+  }
+};
+
+class Effect {
+  constructor(x, y, dia) {
+    this.x = x;
+    this.y = y;
+    this.dia = dia;
+
+    this.growSpeed = -0.5;
+    this.lifespan = 2;
+    this.lifeReduction = random(0.01, 0.02);
+    this.isDone = 0;
+  }
+  grow() {
+    this.dia += this.growSpeed;
+  }
+  age() {
+    if (this.lifespan > 0) {
+      this.lifespan -= this.lifeReduction;
+    } else {
+      this.lifespan = 0;
+      this.isDone = true;
+    }
+  }
+  display() {
+    push();
+    stroke(56,115,133*this.lifespan);
+    strokeWeight(0.5)
     noFill();
-  }
-
-  beginShape();
-  // first controlpoint
-  curveVertex(x[formResolution - 1] + centerX, y[formResolution - 1] + centerY);
-
-  // only these points are drawn
-  for (var i = 0; i < formResolution; i++) {
-    curveVertex(x[i] + centerX, y[i] + centerY);
-  }
-  curveVertex(x[0] + centerX, y[0] + centerY);
-
-  // end controlpoint
-  curveVertex(x[1] + centerX, y[1] + centerY);
-  endShape();
-}
-
-function mousePressed() {
-  // init shape on mouse position
-  centerX = mouseX;
-  centerY = mouseY;
-  var angle = radians(360 / formResolution);
-  var radius = initRadius * random(0.5, 1);
-  for (var i = 0; i < formResolution; i++) {
-    x[i] = cos(angle * i) * initRadius;
-    y[i] = sin(angle * i) * initRadius;
+    ellipse(this.x, this.y, this.dia, this.dia);
+    pop();
   }
 }
+
+//map range
+function mapNumber(number, inMin, inMax, outMin, outMax) {
+  return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+};
+function calculateNote (valueString) {
+  let iterval = parseInt(valueString)% 7;
+  return (notes[iterval])
+};
+function calculateOctave (valueString) {
+  let iterval = Math.floor(parseInt(valueString)/ 7);
+  return (iterval.toString());
+};
+
 
 //Initialize Sockets
 let player2 = io('/player2');
@@ -173,58 +170,28 @@ let player2 = io('/player2');
         console.log("Connected");
     });
 
-//map range
-function mapNumber(number, inMin, inMax, outMin, outMax) {
-  return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
-};
-
-function calculateNote (valueString) {
-    let iterval = parseInt(valueString)% 7;
-    return (notes[iterval])
-};
-function calculateOctave (valueString) {
-    let iterval = Math.floor(parseInt(valueString)/ 7);
-    return (iterval.toString());
-};
-
-document.getElementById("synthstart").addEventListener("click", async () => {
-  await Tone.start();
-  Tone.Transport.start();
-});
-
-document.getElementById("collab").addEventListener("click", async () => {
-  await Tone.start();
-  player.start()
-});
-  
-// synth stop
-document.getElementById("synthstop").addEventListener("click", async () => {
-  Tone.Transport.stop();
-  player.stop();
-});
-
 window.addEventListener('load', function () {
 
   document.getElementById("button").addEventListener("click", async () => {
     console.log("here");
       if (isIOSDevice()) {
         getAccel();
+        
       } else {
       startDeviceOrientation();
-      }; 
-  });
-
-  window.addEventListener('devicemotion', function(event) {
-    // console.log(
-    //   event.acceleration.x + ' m/s2',
-    //   event.acceleration.y + " m/s2 ",
-    //   event.acceleration.z + " m/s2");
-
-    if (event.acceleration.x > 10) {
-      sampler2.triggerAttackRelease("C3");
-      player1.emit('playerstart', 'play');
-    };
-  });
+      };
+      playing = !playing;
+      
+      if (playing) {
+        textFont(myFont)
+        fill(255)
+        textSize(64)
+        text('rotate to find an ocean', width/3.1, height/2);
+        await Tone.start();
+        Tone.Transport.start();
+        synthPart.start();
+      };
+    });
 
   function isIOSDevice() {
     return !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
@@ -247,14 +214,12 @@ window.addEventListener('load', function () {
         // in the alpha-beta-gamma axes (units in degrees)
         window.addEventListener("deviceorientation", e => {
           console.log(e);
-          alpha = document.getElementById("alpha").innerHTML = e.alpha;
-          document.getElementById("beta").innerHTML = e.beta;
+          anglea = document.getElementById("alpha").innerHTML = e.alpha;
+         beta = document.getElementById("beta").innerHTML = e.beta;
           document.getElementById("gama").innerHTML = e.gamma;
-
-          if (alpha = 0) {
-            background(100,100,100)
-          }
-          let value = Math.floor(mapNumber(alpha, 0, 360, 0, 7));
+          
+          
+          let value = Math.floor(mapNumber(anglea, 0, 360, 0, 30));
           calculatescale = calculateNote(value).concat(calculateOctave(value));
           player2.emit('sendData', calculatescale);
         });
@@ -262,43 +227,58 @@ window.addEventListener('load', function () {
     });
   };
 
-  //Console log euler angles
-  function startDeviceOrientation() {
-    window.addEventListener("deviceorientation", e => {
-      console.log(e);
-      alpha = e.alpha;
-      beta = e.beta;
-      gamma = e.gamma;
-     
-      let value = Math.floor(mapNumber(alpha, 0, 360, 0, 30));
+        //Console log euler angles
+        function startDeviceOrientation() {
+          window.addEventListener("deviceorientation", e => {
+            
+            anglea = document.getElementById("alpha").innerHTML = e.alpha;
+            beta = document.getElementById("beta").innerHTML = e.beta;
+            document.getElementById("gama").innerHTML = e.gamma;
+        
+            let value = Math.floor(mapNumber(anglea, 0, 360, 0, 30));
+            calculatescale = calculateNote(value).concat(calculateOctave(value));
+            
+            filter.frequency.value = mapNumber (beta, 100,-10, 0, 720);
+            player2.emit('sendData', calculatescale);
+      
+        
+          });
+        };
 
-      calculatescale = calculateNote(value).concat(calculateOctave(value));
-      player2.emit('sendData', calculatescale);
+      window.addEventListener('devicemotion', function(event) {
+        // console.log(
+        //   event.acceleration.x + ' m/s2',
+        //   event.acceleration.y + " m/s2 ",
+        //   event.acceleration.z + " m/s2");
+    
+        if (event.acceleration.x > 10) {
+          sampler2.triggerAttackRelease("C3");
+          player1.emit('playerstart', 'play');
+        };
+      });
+    
 
-      reverb.value = mapNumber (beta, 0, 200, 0, 100);
-      console.log(reverb.value);
-    });
-  };
 });
 
-  //listening for socket messages(note && octave)
-player2.on("hello", (data) => {
-  console.log(data);
-});
 
-player2.on('filter', (data) => {
-//map range
-function mapNumber(number, inMin, inMax, outMin, outMax) {
-  return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
-};
-  filter.frequency.value = mapNumber (data, 0, 100, 0, 600)
+//   //listening for socket messages(note && octave)
+// player2.on("hello", (data) => {
+//   console.log(data);
+// });
 
-//player
-player.connect(filter).connect(reverb);
-console.log("hey")
-});
+// player2.on('filter', (data) => {
+// //map range
+// function mapNumber(number, inMin, inMax, outMin, outMax) {
+//   return ((number - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+// };
+//   filter.frequency.value = mapNumber (data, 0, 100, 0, 600)
 
-player2.on('playerstart', (data) => {
-  sampler1.triggerAttackRelease("C3");
-  // sampler1.start();
-});
+// //player
+// player.connect(filter).connect(reverb);
+// console.log("hey")
+// });
+
+// player2.on('playerstart', (data) => {
+//   sampler1.triggerAttackRelease("C3");
+//   // sampler1.start();
+// });
