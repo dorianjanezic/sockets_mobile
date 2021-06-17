@@ -3,7 +3,7 @@
 let notes = ["C", "D", "E", "F"];
 let calculatescale = 1;
 let anglea, beta, gamma;
-let player = new Tone.Player("assets/glasswater.wav");//add loop
+let player = new Tone.Player("assets/watersample.wav");//add loop
 let breath = new Tone.Player("assets/breath.wav").toDestination();
 player.loop = true;
 let filtervalue;
@@ -63,35 +63,39 @@ function setup() {
   canvas.position(0,0);
   canvas.style('z-index', '-1');
   background(0)
-  startRot();
+  
   
 };
 
 function draw() {
-  background(0)
   if (anglea == 0 && playerstarted == false) {
   background(56,115,133);
-  fill(255,200)
-  textFont(myFont)
-  textSize(40)
-  text('point your phone towards the ground to dive into the water', width/5, height/2);
   player.start();
   breath.start();
   playerstarted = true;
-  
   };
-}
- function startRot() {
-  if (startrotation == false & anglea == 10) {
-    fill(56,115,133)
+  if (playerstarted == true) {
+    background(0);
+    fill(255,200)
+    textFont(myFont)
+    textSize(40)
+    text('point your phone towards the ground to dive into the water', width/5, height/2);
+    startrotation = true;
+    startRot();
+  }
+
+  if (startrotation == true && beta < 10) {
+    background(0)
+    fill(255,200)
   textFont(myFont)
   textSize(40)
   text('slowly rotate to your left to reach the bottom of the ocean', width/5, height/2);
-  startrotation = true;
+  startRot();
   }
+}
 
-  if (playerstarted == true) {
-    sensorValue = mapNumber(beta, -60, 90, -1.0, 1.0);
+ function startRot() {
+  sensorValue = mapNumber(beta, -60, 90, -1.0, 1.0);
   let x = width/2;
   let y = height/2;
   let dia = map(sensorValue, -1, 1, 1, 1000);
@@ -115,8 +119,16 @@ function draw() {
       effects.splice(i,1)
     }
   }
-  }
 };
+
+  // if (startrotation == false) {
+  //   background(56,115,133)
+  //   fill(56,115,133)
+  // textFont(myFont)
+  // textSize(40)
+  // text('slowly rotate to your left to reach the bottom of the ocean', width/5, height/2);
+  // startrotation = true;
+  // }
 
 class Effect {
   constructor(x, y, dia) {
@@ -184,7 +196,7 @@ window.addEventListener('load', function () {
       
       if (playing) {
         textFont(myFont)
-        fill(255)
+        fill(255);
         textSize(64)
         text('rotate to find an ocean', width/3.1, height/2);
         await Tone.start();
