@@ -43,7 +43,7 @@ function preload() {
   // entrance = new Tone.Player("assets/entrance.wav").toDestination();
   entrance1 = new Tone.Player("assets/entrance1.wav").toDestination();
   earthquake = new Tone.Player("assets/earthquake.wav").toDestination();
-  bridge = new Tone.Player("assets/bridge.wav").toDestination();
+  bridge = new Tone.Player("assets/bridge-1.wav").toDestination();
   whale1 = new Tone.Player("assets/whale1.wav").toDestination();
   dolphin = new Tone.Player("assets/dolphin.wav").toDestination();
   ice = new Tone.Player("assets/ice.wav").toDestination();
@@ -87,8 +87,8 @@ document.getElementById("button").addEventListener("click", async () => {
     console.log("here");
     textFont(myFont);
     fill(255);
-    textSize(64);
-    text("rotate to find an ocean", 20, height / 2);
+    textSize(24);
+    text("rotate to find an ocean", width/3, height / 2);
     await Tone.start();
     Tone.Transport.start();
     synthPart.start();
@@ -135,7 +135,7 @@ function draw() {
   if (state == 2) {
     background(0);
     textSize(12);
-    text("point your phone towards the ground to dive", 20, windowHeight / 2);
+    text("point your phone towards the ground to dive", width/3, 40);
     startEffect();
     console.log("in sec");
     if (beta < 20) {
@@ -146,7 +146,7 @@ function draw() {
   if (state == 3) {
     background(0);
     textSize(12);
-    text("now slowly start rotating", 20, windowHeight / 2);
+    text("now slowly start rotating to your left", width/3, 40);
     console.log("in third");
     startEffect();
     if (breath_start == false) {
