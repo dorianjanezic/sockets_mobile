@@ -4,7 +4,13 @@ let calculatescale = 1;
 let anglea, beta, gamma;
 let player;
 let breath;
-let entrance;
+// let entrance;
+let entrance1;
+let earthquake;
+let bridge;
+let whale1;
+let dolphin;
+let ice;
 let myFont;
 let filtervalue;
 let playing;
@@ -13,6 +19,11 @@ let startrotation = false;
 let playerstarted1 = false;
 let start_effect = false;
 let breath_start = false;
+let earthquake_start = false;
+let bridge_start = false;
+let whale1_start = false;
+let dolphin_start = false;
+let ice_start = false;
 let state = 1;
 let effects = [];
 let sensorValue = 0;
@@ -29,7 +40,13 @@ function preload() {
   player = new Tone.Player("assets/watersample.wav");
   player.loop = true;
   breath = new Tone.Player("assets/breath.wav").toDestination();
-  entrance = new Tone.Player("assets/entrance.wav").toDestination();
+  // entrance = new Tone.Player("assets/entrance.wav").toDestination();
+  entrance1 = new Tone.Player("assets/entrance1.wav").toDestination();
+  earthquake = new Tone.Player("assets/earthquake.wav").toDestination();
+  bridge = new Tone.Player("assets/bridge.wav").toDestination();
+  whale1 = new Tone.Player("assets/whale1.wav").toDestination();
+  dolphin = new Tone.Player("assets/dolphin.wav").toDestination();
+  ice = new Tone.Player("assets/ice.wav").toDestination();
   filter = new Tone.Filter(400, "lowpass").toDestination();
   player.connect(filter);
   sampler = new Tone.Sampler(
@@ -110,11 +127,9 @@ function setup() {
 function draw() {
   if (anglea < 1 && state == 1) {
     background(0);
-    textSize(12);
-    text("point your phone towards the ground to dive", 20, windowHeight / 2);
     console.log("in first");
     player.start();
-    entrance.start();
+    entrance1.start();
     state = 2;
   }
   if (state == 2) {
@@ -137,13 +152,92 @@ function draw() {
     if (breath_start == false) {
       breath.start();
       breath_start = true;
-    }
-    
+    };
+    if (anglea > 40 && anglea < 42) {
+     state = 4;
+  };
+}
+    if (state == 4) {
+      console.log("in 4th");
+      background(0);
+      textSize(12);
+      text("earthquake", 20, windowHeight/2);
+      startEffect();
+      if (earthquake_start == false) {
+      earthquake.start();
+      earthquake_start = true;
+      };
+
+      if (anglea > 80 && anglea < 82) {
+        state = 5
+      };
+    };
+
+    if (state == 5) {
+      console.log("in 5th");
+      background(0);
+      textSize(12);
+      text("bridge", 20, windowHeight/2);
+      startEffect();
+      if (bridge_start == false) {
+        bridge.start();
+        bridge_start = true;
+      };
+      if (anglea > 120 && anglea < 122) {
+        state = 6;
+      };
+    };
+
+      if (state == 6) {
+        console.log("in 6th");
+      background(0);
+      textSize(12);
+      text("whale", 20, windowHeight/2);
+      startEffect();
+      if (whale1_start == false) {
+        whale1.start();
+        whale1_start = true;
+      };
+
+      if (anglea > 160 && anglea < 162) {
+        state = 7;
+      };
+      };
+
+      if (state == 7) {
+        console.log("in 7th");
+      background(0);
+      textSize(12);
+      text("dolphin", 20, windowHeight/2);
+      startEffect();
+      if (dolphin_start == false) {
+        dolphin.start();
+        dolphin_start = true;
+      };
+
+      if (anglea > 200 && anglea < 202) {
+        state = 8;
+      }
+      };
+
+      if (state == 8) {
+        console.log("in 7th");
+      background(0);
+      textSize(12);
+      text("ice", 20, windowHeight/2);
+      startEffect();
+      if (ice_start == false) {
+        ice.start();
+        ice_start = true;
+      };
+      };
+    };
+
     //if (neki){
     //  state = 4;
     //}
 
-  }
+  
 
   // if (startrotation == true && beta < 10) {
   //   background(0);
@@ -153,10 +247,10 @@ function draw() {
   //   text("slowly rotate to your left to reach the bottom of the ocean",width / 5, height / 2);
   //   startEffect();
   // }
-}
+
 
 function startEffect() {
-  sensorValue = mapNumber(beta, -60, 90, -1.0, 1.0);
+  sensorValue = mapNumber(anglea, 0, 360, -1.0, 1.0);
   let x = width / 2;
   let y = height / 2;
   let dia = map(sensorValue, -1, 1, 1, 1000);
@@ -221,9 +315,9 @@ function getAccel() {
       // in the alpha-beta-gamma axes (units in degrees)
       window.addEventListener("deviceorientation", e => {
         console.log(e);
-        anglea = document.getElementById("alpha").innerHTML = e.alpha;
-        beta = document.getElementById("beta").innerHTML = e.beta;
-        document.getElementById("gama").innerHTML = e.gamma;
+        anglea = e.alpha;
+        beta = e.beta;
+        gamma = e.gamma;
 
         filter.frequency.value = mapNumber(beta, 100, -10, 0, 720);
         let value = Math.floor(mapNumber(anglea, 0, 360, 0, 30));
@@ -237,9 +331,9 @@ function getAccel() {
 //Console log euler angles
 function startDeviceOrientation() {
   window.addEventListener("deviceorientation", e => {
-    anglea = document.getElementById("alpha").innerHTML = e.alpha;
-    beta = document.getElementById("beta").innerHTML = e.beta;
-    document.getElementById("gama").innerHTML = e.gamma;
+    anglea = e.alpha;
+    beta = e.beta;
+    gamma = e.gamma;
 
     let value = Math.floor(mapNumber(anglea, 0, 360, 0, 30));
     calculatescale = calculateNote(value).concat(calculateOctave(value));
@@ -255,7 +349,7 @@ class Effect {
     this.y = y;
     this.dia = dia;
 
-    this.growSpeed = -0.5;
+    this.growSpeed = 0.5;
     this.lifespan = 2;
     this.lifeReduction = random(0.01, 0.02);
     this.isDone = 0;
@@ -273,7 +367,7 @@ class Effect {
   }
   display() {
     push();
-    stroke(56, 115, 133 * this.lifespan);
+    stroke(255, 200 * this.lifespan);
     strokeWeight(1);
     noFill();
     ellipse(this.x, this.y, this.dia, this.dia);
