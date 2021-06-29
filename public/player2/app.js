@@ -10,6 +10,7 @@ let earthquake;
 let bridge;
 let whale1;
 let dolphin;
+let geophon;
 let ice;
 let myFont;
 let filtervalue;
@@ -24,7 +25,7 @@ let bridge_start = false;
 let whale1_start = false;
 let dolphin_start = false;
 let ice_start = false;
-let state = 1;
+let start = false;
 let effects = [];
 let sensorValue = 0;
 let canvas;
@@ -33,10 +34,12 @@ let sampler;
 let sampler1;
 let sampler2;
 let synthPart;
+let growspeed = 0.5;
+let state = 0;
 
 //PRELOAD
 function preload() {
-  myFont = loadFont("arialbold.ttf");
+  myFont = loadFont("biome.ttf");
   player = new Tone.Player("assets/watersample.wav");
   player.loop = true;
   breath = new Tone.Player("assets/breath.wav").toDestination();
@@ -47,6 +50,7 @@ function preload() {
   whale1 = new Tone.Player("assets/whale1.wav").toDestination();
   dolphin = new Tone.Player("assets/dolphin.wav").toDestination();
   ice = new Tone.Player("assets/ice.wav").toDestination();
+  geophon = new Tone.Player("assets/geofon.wav").toDestination();
   filter = new Tone.Filter(400, "lowpass").toDestination();
   player.connect(filter);
   sampler = new Tone.Sampler(
@@ -78,20 +82,23 @@ document.getElementById("button").addEventListener("click", async () => {
     textFont(myFont);
     fill(255);
     textSize(24);
-    text("rotate to find an ocean", 20, height / 2);
+    text("turn around, what do you see?", 20, height / 2);
     await Tone.start();
     Tone.Transport.start();
     synthPart.start();
+    state = 1;
+
   } else {
     startDeviceOrientation();
     console.log("here");
     textFont(myFont);
     fill(255);
     textSize(24);
-    text("rotate to find an ocean", width/3, height / 2);
+    text("turn around, what do you see?", width / 3, height / 2);
     await Tone.start();
     Tone.Transport.start();
     synthPart.start();
+    state = 1;
   }
 });
 
@@ -125,7 +132,7 @@ function setup() {
 }
 
 function draw() {
-  if (anglea < 1 && state == 1) {
+  if (anglea < 30 && anglea > 28 && state == 1) {
     background(0);
     console.log("in first");
     player.start();
@@ -135,10 +142,10 @@ function draw() {
   if (state == 2) {
     background(0);
     textSize(12);
-    text("point your phone towards the ground to dive", width/3, 40);
+    text("let your hands loose and slowly start to rotate", width / 3, 40);
     startEffect();
     console.log("in sec");
-    if (beta < 20) {
+    if (beta < -30) {
       state = 3;
     }
   }
@@ -146,114 +153,124 @@ function draw() {
   if (state == 3) {
     background(0);
     textSize(12);
-    text("now slowly start rotating to your left", width/3, 40);
+    text("now SLOWLY turn around again", width / 3, 40);
     console.log("in third");
     startEffect();
     if (breath_start == false) {
       breath.start();
       breath_start = true;
-    };
-    if (anglea > 40 && anglea < 42) {
-     state = 4;
-  };
-}
-    if (state == 4) {
-      console.log("in 4th");
-      background(0);
-      textSize(12);
-      text("earthquake", 20, windowHeight/2);
-      startEffect();
-      if (earthquake_start == false) {
+    }
+    if (anglea > 100 && anglea < 102) {
+      state = 4;
+    }
+  }
+  if (state == 4) {
+    console.log("in 4th");
+    background(0);
+    textSize(12);
+    text("earthquake", 20, windowHeight / 2);
+    startEffect();
+    if (earthquake_start == false) {
       earthquake.start();
       earthquake_start = true;
-      };
+    }
 
-      if (anglea > 80 && anglea < 82) {
-        state = 5
-      };
-    };
+    if (anglea > 160 && anglea < 162) {
+      state = 5;
+    }
+  }
 
-    if (state == 5) {
-      console.log("in 5th");
-      background(0);
-      textSize(12);
-      text("bridge", 20, windowHeight/2);
-      startEffect();
-      if (bridge_start == false) {
-        bridge.start();
-        bridge_start = true;
-      };
-      if (anglea > 120 && anglea < 122) {
-        state = 6;
-      };
-    };
+  if (state == 5) {
+    console.log("in 5th");
+    background(0);
+    textSize(12);
+    text("bridge", 20, windowHeight / 2);
+    startEffect();
+    if (bridge_start == false) {
+      bridge.start();
+      bridge_start = true;
+    }
+    if (anglea > 220 && anglea < 222) {
+      state = 6;
+    }
+  }
 
-      if (state == 6) {
-        console.log("in 6th");
-      background(0);
-      textSize(12);
-      text("whale", 20, windowHeight/2);
-      startEffect();
-      if (whale1_start == false) {
-        whale1.start();
-        whale1_start = true;
-      };
+  if (state == 6) {
+    console.log("in 6th");
+    background(0);
+    textSize(12);
+    text("whale", 20, windowHeight / 2);
+    startEffect();
+    if (whale1_start == false) {
+      geophon.start();
+      whale1_start = true;
+    }
 
-      if (anglea > 160 && anglea < 162) {
-        state = 7;
-      };
-      };
+    if (anglea > 280 && anglea < 282) {
+      state = 7;
+    }
+  }
 
-      if (state == 7) {
-        console.log("in 7th");
-      background(0);
-      textSize(12);
-      text("dolphin", 20, windowHeight/2);
-      startEffect();
-      if (dolphin_start == false) {
-        dolphin.start();
-        dolphin_start = true;
-      };
+  if (state == 7) {
+    console.log("in 7th");
+    background(0);
+    textSize(12);
+    text("dolphin", 20, windowHeight / 2);
+    startEffect();
+    if (dolphin_start == false) {
+      dolphin.start();
+      dolphin_start = true;
+    }
 
-      if (anglea > 200 && anglea < 202) {
-        state = 8;
-      }
-      };
-
-      if (state == 8) {
-        console.log("in 7th");
-      background(0);
-      textSize(12);
-      text("ice", 20, windowHeight/2);
-      startEffect();
-      if (ice_start == false) {
-        ice.start();
-        ice_start = true;
-      };
-      };
-    };
-
-    //if (neki){
-    //  state = 4;
-    //}
-
+    if (anglea > 340 && anglea < 342) {
+      state = 8;
+    }
+  }
   
+  if (anglea < 182 && anglea > 180) {
+    growspeed = -1;
+  }
 
-  // if (startrotation == true && beta < 10) {
-  //   background(0);
-  //   fill(255, 200);
-  //   textFont(myFont);
-  //   textSize(40);
-  //   text("slowly rotate to your left to reach the bottom of the ocean",width / 5, height / 2);
-  //   startEffect();
-  // }
+  if (state == 8) {
+    console.log("in 8th");
+    background(0);
+    textSize(12);
+    text("ice", 20, windowHeight / 2);
+    startEffect();
+    if (ice_start == false) {
+      ice.start();
+      ice_start = true;
+    }
+    if (anglea > 350 && anglea < 352) {
+      state = 9;
+    }
+  }
 
+  if (state == 9) {
+    background(0);
+    startEffect();
+    text("and now?", 20, windowHeight / 2);
+    synthPart.stop();
+  }
+}
 
+//if (neki){
+//  state = 4;
+//}
+
+// if (startrotation == true && beta < 10) {
+//   background(0);
+//   fill(255, 200);
+//   textFont(myFont);
+//   textSize(40);
+//   text("slowly rotate to your left to reach the bottom of the ocean",width / 5, height / 2);
+//   startEffect();
+// }
 function startEffect() {
-  sensorValue = mapNumber(anglea, 0, 360, -1.0, 1.0);
+  sensorValue = mapNumber(anglea, 0, 360, -1.0, 0.7);
   let x = width / 2;
   let y = height / 2;
-  let dia = map(sensorValue, -1, 1, 1, 1000);
+  let dia = map(sensorValue, -1, 1, 1, 700);
   if (frameCount % 60 == 0) {
     effects.push(new Effect(x, y, dia));
   }
@@ -349,8 +366,8 @@ class Effect {
     this.y = y;
     this.dia = dia;
 
-    this.growSpeed = 0.5;
-    this.lifespan = 2;
+    this.growSpeed = growspeed;
+    this.lifespan = 7;
     this.lifeReduction = random(0.01, 0.02);
     this.isDone = 0;
   }
@@ -374,4 +391,3 @@ class Effect {
     pop();
   }
 }
-

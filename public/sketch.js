@@ -8,7 +8,7 @@ let anglea, beta, gamma;
 //load font
 let myFont;
 function preload() {
-  myFont = loadFont('arialbold.ttf');
+  myFont = loadFont('biome.ttf');
 }
 
 function windowResized () {
@@ -73,21 +73,17 @@ function setup() {
   // mic = new p5.AudioIn();
   // mic.start();
   x = 1
-  xspeed = 1
+  xspeed = 2
   x1 = width
-  x1speed = -1
+  x1speed = -2
   y = 0
-  yspeed = 0.5
+  yspeed = 1
 
   let player = new Tone.Player("assets/32_50.wav");
   player.autostart = true;
 
   //text biophonica
-  fill(255,200);
-  textFont(myFont);
-  textSize(64);
-  textAlign(CENTER, CENTER)
-  text('biophonica', windowWidth/2-175,windowHeight/2+300);
+
   
 //   button = createButton('submit');
 //   button.position(350, 100);
@@ -104,7 +100,7 @@ function setup() {
 }
 
 function draw() {
-  
+  background(0)
   stroke(56,115,133)
   noFill()
 strokeWeight(map(gamma, -60, 60, 0, 0.4));
@@ -114,35 +110,43 @@ circle(windowWidth/2, windowHeight/2, (map(beta,-20,60,0, windowHeight)*3)*cos(m
   // /background circles
   noFill()
  stroke(56,115,133)
- strokeWeight(0.08)
+ strokeWeight(2)
   
-  if (x == width) {
+  if (x == width || x == 0) {
     xspeed *= -1
   }
   
    x = x + xspeed;
 
   // + (vol*10000) 
-  circle(x, windowHeight/2,200)
+  circle(x, windowHeight/2 +18,200)
   
-  if (x1 == 0) {
+  if (x1 == 0 || x == width)  {
     x1speed *= -1
   }
   
   x1 = x1 + x1speed
   // + (vol*10000)
-  circle(x1,windowHeight/2,200)
+  circle(x1,windowHeight/2 + 18 ,200)
   
   //center circle
   // fill(53, 171, 28,170)
   noFill()
   
-  if (y < 0 || y > windowHeight/2) {
+  if (y < 0 || y > windowHeight/2 ) {
     yspeed *= 0
   }
   y = y + yspeed
   // + (vol*10000)
-  circle(windowWidth/2,y, 198)
+  circle(windowWidth/2,y + 18, 198)
+
+  noFill();
+  stroke(56, 115, 133);
+  strokeWeight(1);
+  textFont(myFont);
+  textSize(86);
+  textAlign(CENTER, CENTER)
+  text('biophonica', windowWidth/2,50);
 
   // if (xspeed == 0) {
     

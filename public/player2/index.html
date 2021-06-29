@@ -7,6 +7,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@tonaljs/tonal/browser/tonal.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.15/Tone.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.js"></script>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="./browserMqtt.js"></script>
+
     <link rel="stylesheet" type="text/css" href="style.css">
     <title>antropophony</title>
 </head>
@@ -17,7 +20,7 @@
     <script src="/socket.io/socket.io.js"></script>    
 
     <div id="connection" style="font-family:'arialbold'">
-        <button id="button" class="buttons" style="font-family:'arialbold'" onclick="this.style.visibility='hidden';">connect</button>       
+        <button id="button" class="buttons" style="font-family:'arialbold'" onclick="this.style.visibility='hidden';">explore</button>       
     </div>
     <button id="accelPermsButton" style="font-family:'arialbold'">Get Accelerometer Permissions</button>
         <!-- <div id="angles">

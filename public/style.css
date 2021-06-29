@@ -1,6 +1,6 @@
 @font-face {
-    font-family: "arialbold";
-    src: url("arialbold.ttf");
+    font-family: "biome";
+    src: url("biome.ttf");
 }
 
 #buttons {
@@ -51,38 +51,39 @@
     display: grid;
     flex: inherit;
     justify-content: space-around;
-    font-family: "arialbold";
+    font-family: "biome";
     align-items: center;
+  
 
 }
 
-.text {
-    opacity: 0.1;
-}
 
 #nature {
     color: rgba(255, 255, 255, 0.795);  
     width: 100%;
-    height: 50px;
     text-align: center;
     align-items: center;
+    opacity: 0.7;
+  height:40px;
 }
 
 #nature:hover {
-    opacity: 1;
+    
 }
 
 #human {
     color: rgba(255, 255, 255, 0.795);
     width: 100%;
-    height: 50px;
     text-align: center;
     justify-content: space-around;
     align-items: center;
+    opacity: 0.7;
+  height:40px;
+
 }
 
 #human:hover {
-    opacity: 1;
+
 }
 
 #antro {
@@ -91,12 +92,28 @@
     text-align: center;
     justify-content: space-around;
     align-items: center;
+    opacity:0.7;
+  height:40px;
 }
 
 #antro:hover {
-    opacity: 1;
+  
 }
 
+#rotate {
+    color: rgba(255, 255, 255, 0.795);  
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    align-items: center;
+    opacity: 0.7;
+  height:40px;
+
+}
+
+#rotate:hover {
+  
+}
 #accelPermsButton {
     visibility: hidden;
 }
@@ -111,12 +128,46 @@
     cursor: pointer;
     outline: 2px white;
     border-radius: 10px;
-    font-family: "arialbold";
+    font-family: "biome";
+    visibility: hidden;
+    
 }
 
 #motion:hover {
     background-color: rgba(255, 255, 255, 0.795);
     
     color: black;
+}
 
+#sphere {
+    justify-content: center;
+    align-items: center;
+    align-items: center;
+    justify-content: space-around;
+    cursor: pointer;
+    margin-top: 5%;
+}
+
+.rotate90 {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+#qr {
+    margin-top:3%;
+}
+
+#scan {
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.795);
+    font-family: "biome";
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 10%;
+    
 }
